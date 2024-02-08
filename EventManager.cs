@@ -5,18 +5,23 @@ using System;
 
 public static class EventManager 
 {
-    public static event Action HaveArrived;
-    public static event Action HaveInvestigated;
-    // public static event Action 
+    public static event Action<GameObject> HaveArrived;
+    public static event Action<GameObject> HaveInvestigated;
+    public static event Action <GameObject> HaveFinishedTask;
 
 
-    public static void ArrivedAtDestination()
+    public static void ArrivedAtDestination(GameObject gameObject)
     {
-        HaveArrived?.Invoke();
+        HaveArrived?.Invoke(gameObject);
     }
 
-    public static void FinishedInvestigating()
+    public static void FinishedInvestigating(GameObject gameObject)
     {
-        HaveInvestigated?.Invoke();
+        HaveInvestigated?.Invoke(gameObject);
+    }
+
+    public static void FinishedTask(GameObject gameObject)
+    {
+        HaveFinishedTask?.Invoke(gameObject);
     }
 }

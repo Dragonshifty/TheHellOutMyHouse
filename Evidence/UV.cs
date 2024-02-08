@@ -6,19 +6,19 @@ public class UV : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other) 
     {
-        if (other.gameObject.tag.Equals("Investigator"))
+        if (other.gameObject.tag.Equals("Simon") || other.gameObject.tag.Equals("Sam"))
         {
-            Debug.Log("In range of evidence");
-            EvidenceController.inRange = true;
+            if (other.gameObject.tag.Equals("Simon")) EvidenceController.simonInRange = true;
+            if (other.gameObject.tag.Equals("Sam")) EvidenceController.samInRange = true;
         }    
     }
 
     private void OnTriggerExit(Collider other) 
     {
-        if (other.gameObject.tag.Equals("Investigator"))
+        if (other.gameObject.tag.Equals("Simon") || other.gameObject.tag.Equals("Sam"))
         {
-            Debug.Log("Leaving Evidence");
-            EvidenceController.inRange = false;
+            if (other.gameObject.tag.Equals("Simon")) EvidenceController.simonInRange = false;
+            if (other.gameObject.tag.Equals("Sam")) EvidenceController.samInRange = false;
         }    
     }
 }
