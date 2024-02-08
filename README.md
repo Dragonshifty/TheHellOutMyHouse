@@ -1,2 +1,2 @@
-# The Hell out of my House
+# The Hell Out My House
 Hunting ghost investigators
