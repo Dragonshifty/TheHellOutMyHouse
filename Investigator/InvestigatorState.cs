@@ -21,7 +21,7 @@ public class InvestigatorState : MonoBehaviour
     {
         currentState.DoYourThing(investigatorName, roomName);
     }
-    private void ArrivedAtDestination(GameObject gameObject)
+    public void ArrivedAtDestination(GameObject gameObject)
     {
         if (gameObject == this.gameObject)
         {
@@ -31,7 +31,7 @@ public class InvestigatorState : MonoBehaviour
         
     }
 
-    private void FinishedInvestigating(GameObject gameObject)
+    public void FinishedInvestigating(GameObject gameObject)
     {
         if (gameObject == this.gameObject)
         {
@@ -48,11 +48,12 @@ public class InvestigatorState : MonoBehaviour
         }
     }
 
-    private void ChangeRoom(string room)
+    public void ChangeRoom(string room)
     {
         currentState = GetComponent<GoToRoom>();
         StartAction(room);
     }
+
 
     public IActivate GetCurrentState()
     {

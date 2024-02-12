@@ -6,7 +6,8 @@ public class RoomStatus : MonoBehaviour
 {
     private bool lightsOn;
     private float temperature;
-
+  
+    
     [SerializeField] Transform lightswitch;
     [SerializeField] Transform hidingSpot;
     [SerializeField] List<Transform> waypoints;
