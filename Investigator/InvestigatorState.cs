@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -15,6 +16,11 @@ public class InvestigatorState : MonoBehaviour
         EventManager.HaveInvestigated += gameObject => FinishedInvestigating(gameObject);
         EventManager.HaveFinishedTask += gameObject => FinishedTask(gameObject);
         // StartAction();
+    }
+
+    public string GetInvestigatorName()
+    {
+        return investigatorName;
     }
 
     private void StartAction(string roomName)
@@ -54,6 +60,11 @@ public class InvestigatorState : MonoBehaviour
         StartAction(room);
     }
 
+    public void TurnOnLight(string room)
+    {
+        currentState = GetComponent<FlickLightSwitch>();
+        StartAction(room);
+    }
 
     public IActivate GetCurrentState()
     {

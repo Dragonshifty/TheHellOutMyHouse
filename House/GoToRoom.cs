@@ -32,7 +32,7 @@ public class GoToRoom : MonoBehaviour, IActivate
 
     private void MoveToDestination(string waypointName)
     {
-        Debug.Log(waypointName);
+        // Debug.Log(waypointName);
         Vector3 destination = roomWaypoints[waypointName].position;
         investigator.destination = destination;
 
