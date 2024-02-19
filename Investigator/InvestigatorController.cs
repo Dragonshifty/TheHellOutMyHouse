@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.PackageManager.UI;
+using PersonalitySpace;
 using UnityEngine;
 
 public class InvestigatorController : MonoBehaviour
@@ -39,6 +40,10 @@ public class InvestigatorController : MonoBehaviour
         EventManager.HaveEnteredRoom += gameObject => GetRoomInfo(gameObject);
         EventManager.HaveChangedLights += gameObject => UpdateLights(gameObject);
         StartInvestigation();
+
+        PersonalityList personalityList = new PersonalityList();
+        Personality personality = personalityList.GetAmateur();
+        Debug.Log(personality.GetInvestigatorType() + personality.GetGearLevel());
     }
 
     
@@ -63,7 +68,7 @@ public class InvestigatorController : MonoBehaviour
         // samState.ChangeRoom("LivingRoom");
         // simonState.ChangeRoom("Bedroom1");
         IssueOrder(samToDoList);
-        IssueOrder(simonToDoList);
+        // IssueOrder(simonToDoList);
     }
 
     private void IssueOrder(ToDoList investigatorToDoList)

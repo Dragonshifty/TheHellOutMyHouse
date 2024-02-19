@@ -13,7 +13,10 @@ public class RoomStatus : MonoBehaviour
     [SerializeField] List<Transform> waypoints;
    
     public bool LightsOn
-    { get; set; }
+    { 
+        get { return lightsOn; } 
+        set { lightsOn = value; } 
+    }
 
     public float Temperature
     { get; set; }
