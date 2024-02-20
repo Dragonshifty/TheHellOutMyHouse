@@ -8,7 +8,7 @@ public class InvestigatorState : MonoBehaviour
     IActivate currentState;
     
     [SerializeField] string investigatorName;
-    private string currentRoom = "Outside";
+    // private string currentRoom = "Outside";
     private void Start() 
     {   
         currentState = GetComponent<Idle>();

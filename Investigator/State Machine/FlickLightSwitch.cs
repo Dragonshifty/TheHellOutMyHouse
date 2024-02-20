@@ -49,6 +49,8 @@ public class FlickLightSwitch : MonoBehaviour, IActivate
 
     private void DestinationReached()
     {
+        EventManager.ChangedLights(gameObject);
         EventManager.FinishedTask(gameObject);
+        
     }
 }

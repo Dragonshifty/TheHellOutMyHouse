@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public class RoomStatus : MonoBehaviour
@@ -19,7 +20,20 @@ public class RoomStatus : MonoBehaviour
     }
 
     public float Temperature
-    { get; set; }
+    { 
+        get { return temperature; } 
+        set { temperature = value; } 
+    }
+
+    public Transform GetLightswitchLocation()
+    {
+        return lightswitch;
+    }
+
+    public Transform GetHidingSpotLocation()
+    {
+        return hidingSpot;
+    }
 
     public List<Transform> GetWaypoints()
     {

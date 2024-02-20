@@ -8,11 +8,14 @@ public class ToDoList
 {
     private string investigator;
     private string currentRoom;
+    private bool lightOn;
+    private float roomTemerature;
     private string targetDestination;
     private InvestigatorState investigatorState;
     private bool inHouse = false;
-    private bool livingRoomLight = false;
-    // private bool lightsOn;
+    // private bool livingRoomLight = false;
+    // private int test = 0;
+    
 
     public ToDoList(string investigator, InvestigatorState investigatorState)
     {
@@ -24,7 +27,17 @@ public class ToDoList
     { get; private set; }
 
     public string CurrentRoom
-    { get; set; }
+    { 
+        get { return currentRoom; } 
+        set { currentRoom = value; }
+    }
+
+    public void UpdateRoomStatus(RoomKnowledge roomKnowledge)
+    {
+        currentRoom = roomKnowledge.GetRoomName();
+        lightOn = roomKnowledge.GetLightStatus();
+        roomTemerature = roomKnowledge.GetRoomTemperature();
+    }
 
     public string TargetDestination
     { get; set; }
@@ -33,17 +46,18 @@ public class ToDoList
     {
         if (!inHouse)
         {
+            inHouse = true;
             if (investigator.Equals("Sam")) return new ActionList(investigatorState, "LivingRoom", "Travel");
-            if (investigator.Equals("Simon")) return new ActionList(investigatorState, "Kitchen", "Travel");
+            if (investigator.Equals("Simon")) return new ActionList(investigatorState, "Bedroom1", "Travel");
+            
         }
 
-        if (!livingRoomLight)
+        if (!lightOn)
         {
-            Debug.Log("To Do Light");
-            livingRoomLight = true;
-            return new ActionList(investigatorState, "LivingRoom", "Light");
+            return new ActionList(investigatorState, currentRoom, "Light");
         }
-        return null;
+        return new ActionList(investigatorState, "Kitchen", "Travel");
+        // return null;
     }
 
     private bool CheckInHouse()

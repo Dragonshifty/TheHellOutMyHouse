@@ -13,16 +13,17 @@ public class InvestigatorController : MonoBehaviour
     
     GameObject samObject;
     GameObject simonObject;
-    ToDoList samToDoList;
-    ToDoList simonToDoList;
-    string samCurrentRoom = "Outside";
-    string simonCurrentRoom = "Outside";
-    private bool samIdle = true;
-    private bool simonIdle = true;
+    // ToDoList samToDoList;
+    // ToDoList simonToDoList;
+    Dictionary<GameObject, ToDoList> investigatorToDoLists = new Dictionary<GameObject, ToDoList>();
+    // string samCurrentRoom = "Outside";
+    // string simonCurrentRoom = "Outside";
+    // private bool samIdle = true;
+    // private bool simonIdle = true;
     
-    private bool samInRoom;
-    private bool simonInRoom;
-    private bool nRoom;
+    // private bool samInRoom;
+    // private bool simonInRoom;
+    // private bool nRoom;
     
     private void Awake() 
     {
@@ -31,8 +32,8 @@ public class InvestigatorController : MonoBehaviour
         samState = samObject.GetComponent<InvestigatorState>();
         simonState = simonObject.GetComponent<InvestigatorState>();
 
-        samToDoList = new ToDoList("Sam", samState);
-        simonToDoList = new ToDoList("Simon", simonState);
+        investigatorToDoLists[samObject] = new ToDoList("Sam", samState);
+        investigatorToDoLists[simonObject] = new ToDoList("Simon", simonState);
     }
     void Start()
     {
@@ -40,35 +41,14 @@ public class InvestigatorController : MonoBehaviour
         EventManager.HaveEnteredRoom += gameObject => GetRoomInfo(gameObject);
         EventManager.HaveChangedLights += gameObject => UpdateLights(gameObject);
         StartInvestigation();
-
-        PersonalityList personalityList = new PersonalityList();
-        Personality personality = personalityList.GetAmateur();
-        Debug.Log(personality.GetInvestigatorType() + personality.GetGearLevel());
     }
 
     
 
-    // void Update()
-    // {
-    //     if (samIdle)
-    //     {
-    //         IssueOrder(samToDoList);
-    //         samIdle = false;
-    //     }
-
-    //     if (simonIdle)
-    //     {
-    //         IssueOrder(simonToDoList);
-    //         simonIdle = false;
-    //     }
-    // }
-
     private void StartInvestigation()
     {
-        // samState.ChangeRoom("LivingRoom");
-        // simonState.ChangeRoom("Bedroom1");
-        IssueOrder(samToDoList);
-        // IssueOrder(simonToDoList);
+        IssueOrder(investigatorToDoLists[samObject]);
+        IssueOrder(investigatorToDoLists[simonObject]);
     }
 
     private void IssueOrder(ToDoList investigatorToDoList)
@@ -78,80 +58,50 @@ public class InvestigatorController : MonoBehaviour
         
         if (nextAction != null)
         {
-            string room;
-            if (nextAction.Investigator.GetInvestigatorName().Equals("Sam"))
-            {
-                samCurrentRoom = nextAction.Room;
-                room = samCurrentRoom;
-            } 
-            if (nextAction.Investigator.GetInvestigatorName().Equals("Simon"))
-            {
-                simonCurrentRoom = nextAction.Room;
-                room = simonCurrentRoom;
-            } 
-
             if (nextAction.Action.Equals("Travel"))
             {
                 nextAction.Investigator.ChangeRoom(nextAction.Room);
             }
-            Debug.Log("Got to here");
 
             if (nextAction.Action.Equals("Light"))
             {
-                Debug.Log("Light");
+                Debug.Log("Turning on the light.");
                 nextAction.Investigator.TurnOnLight(nextAction.Room);                
             }
         }
-
     }
 
     private void SetIdle(GameObject investigator)
     {
-
-        if (investigator == samObject)
-        {
-            IssueOrder(samToDoList);
-            samIdle = true;
-        }
-        if (investigator == simonObject) 
-        {
-            IssueOrder(simonToDoList);
-            simonIdle = true;
-        }
-        // Debug.Log("Finshed Task");
+        IssueOrder(investigatorToDoLists[investigator]);
     }
 
     private void GetRoomInfo(GameObject investigator)
     {
-        if (investigator == samObject) 
-        {
-            samCurrentRoom = samObject.GetComponent<RoomKnowledge>().GetRoomName();
-            Debug.Log("Sam in" + samCurrentRoom);
-        }
+        RoomKnowledge roomKnowledge = investigator.GetComponent<RoomKnowledge>();
+        string room = roomKnowledge.GetRoomName();
+        string investigatorName = investigator.GetComponent<InvestigatorState>().GetInvestigatorName();
+        bool lightStatus = roomKnowledge.GetLightStatus();
 
-        if (investigator == simonObject)
-        {
-            simonCurrentRoom = simonObject.GetComponent<RoomKnowledge>().GetRoomName();
-            Debug.Log("Simon in" + simonCurrentRoom);
-        }
+        investigatorToDoLists[investigator].UpdateRoomStatus(roomKnowledge);
+        Debug.Log(investigatorName + room + " Light is " + lightStatus);
     }
 
     private void UpdateLights(GameObject investigator)
     {
-        bool onOrOff = investigator.GetComponent<RoomKnowledge>().GetLightStatus();
+        RoomKnowledge roomKnowledge = investigator.GetComponent<RoomKnowledge>();
+        bool onOrOff = roomKnowledge.GetLightStatus();
 
         if (!onOrOff)
         {
-            investigator.GetComponent<RoomKnowledge>().FlickLightswitch(onOrOff);
+            roomKnowledge.FlickLightswitch(true);
         } else
         {
-            // investigator.GetComponent<RoomKnowledge>().FlickLightswitch(onOrOff);
+            roomKnowledge.FlickLightswitch(onOrOff);
         }
 
-        if (investigator == samObject)
-        {
-            samCurrentRoom = samObject.GetComponent<RoomKnowledge>().GetRoomName();
-            Debug.Log("Sam in" + samCurrentRoom);
-        }
+        investigatorToDoLists[investigator].UpdateRoomStatus(roomKnowledge);
+
+        Debug.Log(roomKnowledge.GetRoomName() + " " + "light is " + roomKnowledge.GetLightStatus());
     }
 }

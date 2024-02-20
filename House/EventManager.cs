@@ -10,6 +10,8 @@ public static class EventManager
     public static event Action <GameObject> HaveFinishedTask;
     public static event Action <GameObject> HaveEnteredRoom;
     public static event Action <GameObject> HaveChangedLights;
+    
+    
 
 
     public static void ArrivedAtDestination(GameObject gameObject)
