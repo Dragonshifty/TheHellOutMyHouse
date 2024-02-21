@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using JetBrains.Annotations;
+using PersonalitySpace;
 using UnityEngine;
 
 public class ToDoList 
@@ -11,10 +11,11 @@ public class ToDoList
     private bool lightOn;
     private float roomTemerature;
     private string targetDestination;
+
+    private Personality personality;
     private InvestigatorState investigatorState;
     private bool inHouse = false;
-    // private bool livingRoomLight = false;
-    // private int test = 0;
+    private bool tester = false;
     
 
     public ToDoList(string investigator, InvestigatorState investigatorState)
@@ -32,15 +33,39 @@ public class ToDoList
         set { currentRoom = value; }
     }
 
+    public string TargetDestination
+    { get; set; }
+
+    public void GetPersonality()
+    {
+        PersonalityList personalityList = new PersonalityList();
+
+        string[] personalityListEasy = new string[] {"Student", "Amateur", "Professional"};
+
+        string choice = personalityListEasy[UnityEngine.Random.Range(0, 3)];
+
+        switch (choice)
+        {
+            case "Student":
+                personality = personalityList.GetStudent();
+                break;
+            case "Amateur":
+                personality = personalityList.GetAmateur();
+                break;
+            case "Professional":
+                personality = personalityList.GetProfessional();
+                break;
+        }
+
+        Debug.Log($"{investigator} is {personality.GetInvestigatorType()}");
+    }
+
     public void UpdateRoomStatus(RoomKnowledge roomKnowledge)
     {
         currentRoom = roomKnowledge.GetRoomName();
         lightOn = roomKnowledge.GetLightStatus();
         roomTemerature = roomKnowledge.GetRoomTemperature();
     }
-
-    public string TargetDestination
-    { get; set; }
 
     public ActionList GetNextAction()
     {
@@ -56,7 +81,12 @@ public class ToDoList
         {
             return new ActionList(investigatorState, currentRoom, "Light");
         }
-        return new ActionList(investigatorState, "Kitchen", "Travel");
+        if (!tester)
+        {
+            tester = true;
+            return new ActionList(investigatorState, "Kitchen", "Travel");
+        }
+        return new ActionList(investigatorState, "Kitchen", "Search");
         // return null;
     }
 

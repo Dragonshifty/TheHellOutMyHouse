@@ -15,7 +15,7 @@ public class ActionList
         this.action = action;
     }
 
-    public InvestigatorState Investigator { get {return investigator; } }
+    public InvestigatorState Investigator { get { return investigator; } }
     public string Room { get { return room; } }
     public string Action { get { return action; } }
    

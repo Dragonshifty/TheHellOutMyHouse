@@ -66,6 +66,12 @@ public class InvestigatorState : MonoBehaviour
         StartAction(room);
     }
 
+    public void SearchRoom(string room)
+    {
+        currentState = GetComponent<SearchRoom>();
+        StartAction(room);
+    }
+
     public IActivate GetCurrentState()
     {
         return currentState;

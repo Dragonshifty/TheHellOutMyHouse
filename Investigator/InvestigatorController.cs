@@ -47,6 +47,8 @@ public class InvestigatorController : MonoBehaviour
 
     private void StartInvestigation()
     {
+        investigatorToDoLists[samObject].GetPersonality();
+        investigatorToDoLists[simonObject].GetPersonality();
         IssueOrder(investigatorToDoLists[samObject]);
         IssueOrder(investigatorToDoLists[simonObject]);
     }
@@ -67,6 +69,12 @@ public class InvestigatorController : MonoBehaviour
             {
                 Debug.Log("Turning on the light.");
                 nextAction.Investigator.TurnOnLight(nextAction.Room);                
+            }
+
+            if (nextAction.Action.Equals("Search"))
+            {
+                Debug.Log("Searching");
+                nextAction.Investigator.SearchRoom(nextAction.Room);
             }
         }
     }

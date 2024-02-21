@@ -54,4 +54,9 @@ public class RoomKnowledge : MonoBehaviour
     {
         return room.Temperature;
     }
+
+    public List<Transform> GetRoomPoints()
+    {
+        return room.GetWaypoints();
+    }
 }
