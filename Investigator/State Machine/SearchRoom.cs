@@ -27,9 +27,14 @@ public class SearchRoom : MonoBehaviour, IActivate
 
     private void MoveToDestination()
     {
-        // Debug.Log(waypointName);
-        Vector3 destination = roomWaypoints[UnityEngine.Random.Range(0, roomWaypoints.Count)].position;
-        // Vector3 destination = roomWaypoints[1].position;
+        int index = UnityEngine.Random.Range(0, roomWaypoints.Count);
+        // Debug.Log(index + " waypoints");
+        if (roomWaypoints.Count == 0)
+        {
+            Debug.LogError("No waypoints available.");
+            // return Vector3.zero; // Or any default position you prefer
+        }
+        Vector3 destination = roomWaypoints[index].position;
         investigator.destination = destination;
 
         StartCoroutine(CheckForDestinationReached(destination));
@@ -55,7 +60,7 @@ public class SearchRoom : MonoBehaviour, IActivate
 
     private void DestinationReached()
     {
-        Debug.Log("Reached");
+        // Debug.Log("Reached");
         MoveToDestination();
         // EventManager.FinishedTask(gameObject);
     }

@@ -12,6 +12,7 @@ public class RoomStatus : MonoBehaviour
     [SerializeField] Transform lightswitch;
     [SerializeField] Transform hidingSpot;
     [SerializeField] List<Transform> waypoints;
+
    
     public bool LightsOn
     { 
@@ -35,13 +36,17 @@ public class RoomStatus : MonoBehaviour
         return hidingSpot;
     }
 
+
+
     public List<Transform> GetWaypoints()
     {
+
         List<Transform> waypointsList = new List<Transform>();
         foreach (Transform child in waypoints)
         {
             waypointsList.Add(child);
         }
+        Debug.Log("Got Waypoints from Room Status" + waypoints.Count);
         return waypointsList;
     }
 

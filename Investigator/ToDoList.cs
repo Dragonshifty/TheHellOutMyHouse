@@ -14,14 +14,18 @@ public class ToDoList
 
     private Personality personality;
     private InvestigatorState investigatorState;
+    private GroupInventory groupInventory;
     private bool inHouse = false;
     private bool tester = false;
+
+    private Dictionary<string, bool> roomsVisited = HouseRoomReturn.GetStarterHouseRooms();
     
 
-    public ToDoList(string investigator, InvestigatorState investigatorState)
+    public ToDoList(string investigator, InvestigatorState investigatorState, GroupInventory groupInventory)
     {
         this.investigator = investigator;
         this.investigatorState = investigatorState;
+        this.groupInventory = groupInventory;
     }
 
     public string Investigator

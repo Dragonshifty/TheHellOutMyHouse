@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class ActionList 
 {
-    private InvestigatorState investigator;
+    private InvestigatorState investigatorState;
     private string room;
     private string action;
 
-    public ActionList (InvestigatorState investigator, string room, string action)
+    public ActionList (InvestigatorState investigatorState, string room, string action)
     {
-        this.investigator = investigator;
+        this.investigatorState = investigatorState;
         this.room = room;
         this.action = action;
     }
 
-    public InvestigatorState Investigator { get { return investigator; } }
+    public InvestigatorState InvestigatorState { get { return investigatorState; } }
     public string Room { get { return room; } }
     public string Action { get { return action; } }
    
