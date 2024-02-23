@@ -10,13 +10,16 @@ public class ToDoList
     private string currentRoom;
     private bool lightOn;
     private float roomTemerature;
-    private string targetDestination;
 
     private Personality personality;
     private InvestigatorState investigatorState;
     private GroupInventory groupInventory;
-    private bool inHouse = false;
-    private bool tester = false;
+    private bool inHouse;
+    private bool enteredRoom;
+    private bool searched;
+    private bool tester;
+    private Explore explore = new Explore();
+    private Coordination coordination;
 
     private Dictionary<string, bool> roomsVisited = HouseRoomReturn.GetStarterHouseRooms();
     
@@ -37,14 +40,12 @@ public class ToDoList
         set { currentRoom = value; }
     }
 
-    public string TargetDestination
-    { get; set; }
 
     public void GetPersonality()
     {
         PersonalityList personalityList = new PersonalityList();
 
-        string[] personalityListEasy = new string[] {"Student", "Amateur", "Professional"};
+        string[] personalityListEasy = new string[] {"Student", "Amateur", "Experienced", "Professional"};
 
         string choice = personalityListEasy[UnityEngine.Random.Range(0, 3)];
 
@@ -55,6 +56,9 @@ public class ToDoList
                 break;
             case "Amateur":
                 personality = personalityList.GetAmateur();
+                break;
+            case "Experienced":
+                personality = personalityList.GetExperienced();
                 break;
             case "Professional":
                 personality = personalityList.GetProfessional();
@@ -76,22 +80,50 @@ public class ToDoList
         if (!inHouse)
         {
             inHouse = true;
-            if (investigator.Equals("Sam")) return new ActionList(investigatorState, "LivingRoom", "Travel");
-            if (investigator.Equals("Simon")) return new ActionList(investigatorState, "Bedroom1", "Travel");
-            
-        }
+            enteredRoom = true;
 
-        if (!lightOn)
-        {
-            return new ActionList(investigatorState, currentRoom, "Light");
+            return new ActionList(investigatorState, "LivingRoom", "Travel");
+
         }
-        if (!tester)
+        if (enteredRoom)
         {
-            tester = true;
-            return new ActionList(investigatorState, "Kitchen", "Travel");
+            if (!lightOn)
+            {
+                return new ActionList(investigatorState, currentRoom, "Light");
+            } 
+
+            enteredRoom = false;
+
+            if (SearchOrExplore() && !Coordination.HasRoomBeenSearch(currentRoom)) // true is search
+            {
+                enteredRoom = true;
+                Coordination.SetRoomSearched(currentRoom, true);
+                return new ActionList(investigatorState, currentRoom, "Search");
+            } else
+            {
+                enteredRoom = true;
+                string chosenRoom = explore.ChooseNewRoom(roomsVisited);
+                return new ActionList(investigatorState, chosenRoom, "Travel");
+            }
+
         }
-        return new ActionList(investigatorState, "Kitchen", "Search");
-        // return null;
+        
+        // if (!tester)
+        // {
+        //     tester = true;
+        //     return new ActionList(investigatorState, "Kitchen", "Travel");
+        // }
+        // return new ActionList(investigatorState, "Kitchen", "Search");
+        Debug.Log("Fin");
+        return null;
+    }
+
+    private bool SearchOrExplore()
+    {
+        int searchLevel = personality.GetInvestigativeSkillLevel();
+        if (searchLevel >= UnityEngine.Random.Range(0, 11)) return true;
+        
+        return false;
     }
 
     private bool CheckInHouse()

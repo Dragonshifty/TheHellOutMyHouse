@@ -7,6 +7,7 @@ public class SearchRoom : MonoBehaviour, IActivate
 {
     List<Transform> roomWaypoints;
     NavMeshAgent investigator;
+    private int counter;
 
 
     private void Start() 
@@ -20,6 +21,7 @@ public class SearchRoom : MonoBehaviour, IActivate
 
     public void StartSearch()
     {
+        counter = UnityEngine.Random.Range(3, 10);
         RoomKnowledge roomKnowledge = GetComponent<RoomKnowledge>();
         roomWaypoints = roomKnowledge.GetRoomPoints();
         MoveToDestination();
@@ -60,8 +62,13 @@ public class SearchRoom : MonoBehaviour, IActivate
 
     private void DestinationReached()
     {
-        // Debug.Log("Reached");
-        MoveToDestination();
-        // EventManager.FinishedTask(gameObject);
+        counter--;
+        if (counter > 0)
+        {
+            MoveToDestination();
+        } else
+        {
+            EventManager.FinishedTask(gameObject);
+        }
     }
 }
