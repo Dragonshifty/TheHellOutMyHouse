@@ -46,7 +46,7 @@ public class RoomStatus : MonoBehaviour
         {
             waypointsList.Add(child);
         }
-        Debug.Log("Got Waypoints from Room Status" + waypoints.Count);
+        // Debug.Log("Got Waypoints from Room Status" + waypoints.Count);
         return waypointsList;
     }
 

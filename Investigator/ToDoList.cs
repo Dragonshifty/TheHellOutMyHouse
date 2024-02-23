@@ -16,14 +16,10 @@ public class ToDoList
     private GroupInventory groupInventory;
     private bool inHouse;
     private bool enteredRoom;
-    private bool searched;
-    private bool tester;
     private Explore explore = new Explore();
     private Coordination coordination;
-
     private Dictionary<string, bool> roomsVisited = HouseRoomReturn.GetStarterHouseRooms();
     
-
     public ToDoList(string investigator, InvestigatorState investigatorState, GroupInventory groupInventory)
     {
         this.investigator = investigator;
@@ -107,13 +103,7 @@ public class ToDoList
             }
 
         }
-        
-        // if (!tester)
-        // {
-        //     tester = true;
-        //     return new ActionList(investigatorState, "Kitchen", "Travel");
-        // }
-        // return new ActionList(investigatorState, "Kitchen", "Search");
+
         Debug.Log("Fin");
         return null;
     }

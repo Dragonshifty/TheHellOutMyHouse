@@ -104,7 +104,7 @@ public class InvestigatorController : MonoBehaviour
         bool lightStatus = roomKnowledge.GetLightStatus();
 
         investigatorToDoLists[investigator].UpdateRoomStatus(roomKnowledge);
-        // Debug.Log(investigatorName + room + " Light is " + lightStatus);
+        Debug.Log(investigatorName + room + " Light is " + lightStatus);
     }
 
     private void UpdateLights(GameObject investigator)
