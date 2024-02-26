@@ -7,6 +7,7 @@ public class GoToRoom : MonoBehaviour, IActivate
 {
     NavMeshAgent investigator;    
     HouseInfo houseInfo;
+    Coroutine currentCoroutine;
 
     Dictionary <string, Transform> roomWaypoints;
     private void Start() 
@@ -36,7 +37,7 @@ public class GoToRoom : MonoBehaviour, IActivate
         Vector3 destination = roomWaypoints[waypointName].position;
         investigator.destination = destination;
 
-        StartCoroutine(CheckForDestinationReached(destination));
+        currentCoroutine = StartCoroutine(CheckForDestinationReached(destination));
     }
 
     private IEnumerator CheckForDestinationReached(Vector3 destination)

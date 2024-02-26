@@ -7,6 +7,7 @@ public class SearchRoom : MonoBehaviour, IActivate
 {
     List<Transform> roomWaypoints;
     NavMeshAgent investigator;
+    private Coroutine currentCoroutine;
     private int counter;
 
 
@@ -18,6 +19,17 @@ public class SearchRoom : MonoBehaviour, IActivate
     {
         StartSearch();
     }
+
+    private void Update() {
+        if (Input.GetKey(KeyCode.S))
+        {
+            if (currentCoroutine != null) StopCoroutine(currentCoroutine);
+            currentCoroutine = null;
+            Debug.Log("Stopped");
+        }
+    }    
+
+    
 
     public void StartSearch()
     {
@@ -39,7 +51,7 @@ public class SearchRoom : MonoBehaviour, IActivate
         Vector3 destination = roomWaypoints[index].position;
         investigator.destination = destination;
 
-        StartCoroutine(CheckForDestinationReached(destination));
+        currentCoroutine = StartCoroutine(CheckForDestinationReached(destination));
     }
 
     private IEnumerator CheckForDestinationReached(Vector3 destination)
@@ -65,10 +77,18 @@ public class SearchRoom : MonoBehaviour, IActivate
         counter--;
         if (counter > 0)
         {
-            MoveToDestination();
+            // MoveToDestination();
+            currentCoroutine = StartCoroutine(HoldPlease());
         } else
         {
             EventManager.FinishedTask(gameObject);
         }
+    }
+
+    private IEnumerator HoldPlease()
+    {
+        int holdtime = UnityEngine.Random.Range(1, 5);
+        yield return new WaitForSeconds(holdtime);
+        MoveToDestination();
     }
 }

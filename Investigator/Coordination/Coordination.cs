@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Coordination 
 {
-    public static Dictionary<string, bool> roomsSearched = new Dictionary<string, bool>
+    private static Dictionary<InvestigatorState, ActionList> actionLists = new Dictionary<InvestigatorState, ActionList>();
+    private static Dictionary<string, string> investigatorRoles = new Dictionary<string, string>();
+    private static Dictionary<string, bool> roomsSearched = new Dictionary<string, bool>
     {
         { "Outside", true },
         { "LivingRoom", false },
@@ -35,5 +38,33 @@ public class Coordination
         {
             Debug.LogError("Can't set room searched, key error");
         }
+    }
+
+    public static void SetRole(string name, string role)
+    {
+        investigatorRoles[name] = role;
+    }
+
+    public static void SetActionList(ActionList actionList)
+    {
+        actionLists[actionList.InvestigatorState] = actionList;
+    }
+
+    public static bool CheckSameAction(InvestigatorState investigatorState)
+    {
+        if (actionLists != null)
+        {
+            foreach (KeyValuePair<InvestigatorState, ActionList> entry in actionLists)
+            {
+                if (!entry.Key.GetInvestigatorName().Equals(investigatorState.GetInvestigatorName()))
+                {
+                    if (actionLists[investigatorState].Room.Equals(entry.Value.Room) && actionLists[investigatorState].Action.Equals(entry.Value.Action))
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

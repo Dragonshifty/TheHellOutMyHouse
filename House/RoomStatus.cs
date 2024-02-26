@@ -13,6 +13,7 @@ public class RoomStatus : MonoBehaviour
     [SerializeField] Transform hidingSpot;
     [SerializeField] List<Transform> waypoints;
 
+
    
     public bool LightsOn
     { 
@@ -35,6 +36,7 @@ public class RoomStatus : MonoBehaviour
     {
         return hidingSpot;
     }
+
 
 
 

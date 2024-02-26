@@ -4,9 +4,11 @@ using UnityEditor.PackageManager.UI;
 using PersonalitySpace;
 using TMPro;
 using UnityEngine;
+using Unity.VisualScripting;
 
 public class InvestigatorController : MonoBehaviour
 {
+    private Camera mainCamera;
     private InvestigatorState samState;
     private InvestigatorState simonState;
     private BubbleText bubbleText = new BubbleText();
@@ -39,6 +41,7 @@ public class InvestigatorController : MonoBehaviour
     }
     void Start()
     {
+        mainCamera = Camera.main;
         EventManager.HaveFinishedTask += gameObject => SetIdle(gameObject);
         EventManager.HaveEnteredRoom += gameObject => GetRoomInfo(gameObject);
         EventManager.HaveChangedLights += gameObject => UpdateLights(gameObject);
@@ -79,7 +82,26 @@ public class InvestigatorController : MonoBehaviour
             {
                 nextAction.InvestigatorState.SearchRoom(nextAction.Room);
             }
+
+            if (nextAction.Action.Equals("FindHiding"))
+            {
+                nextAction.InvestigatorState.FindHiding(nextAction.Room);
+            }
+
+            if (nextAction.Action.Equals("Clash"))
+            {
+                IssueOrder(investigatorToDoLists[nextAction.InvestigatorState.gameObject]);
+            }
         }
+    }
+
+    private void Update() 
+    {
+        if (Input.GetKey(KeyCode.L))
+        {
+            samState.ChangeRoom("LivingRoom");
+            simonState.ChangeRoom("LivingRoom");
+        }    
     }
 
     private void SendMessageToBubbles(ActionList nextAction)

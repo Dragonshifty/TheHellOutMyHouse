@@ -30,6 +30,9 @@ public class BubbleText
             case "Search":
                 bubbleText.text = $"{name} {searching} {room}";
                 break;
+            case "FindHiding":
+                bubbleText.text = "Finding Hiding Spot";
+                break;
         }
     }
 }

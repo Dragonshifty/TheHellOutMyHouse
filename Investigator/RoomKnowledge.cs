@@ -55,6 +55,12 @@ public class RoomKnowledge : MonoBehaviour
         return room.Temperature;
     }
 
+    public Transform GetHidingSpot()
+    {
+        return room.GetHidingSpotLocation();
+    }
+
+
     public List<Transform> GetRoomPoints()
     {
         return room.GetWaypoints();

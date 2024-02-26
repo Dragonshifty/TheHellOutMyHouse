@@ -7,6 +7,7 @@ using UnityEngine;
 public class ToDoList 
 {
     private string investigator;
+    private string investigatorType;
     private string currentRoom;
     private bool lightOn;
     private float roomTemerature;
@@ -16,6 +17,7 @@ public class ToDoList
     private GroupInventory groupInventory;
     private bool inHouse;
     private bool enteredRoom;
+    private bool clash;
     private Explore explore = new Explore();
     private Coordination coordination;
     private Dictionary<string, bool> roomsVisited = HouseRoomReturn.GetStarterHouseRooms();
@@ -61,7 +63,10 @@ public class ToDoList
                 break;
         }
 
-        Debug.Log($"{investigator} is {personality.GetInvestigatorType()}");
+        investigatorType = personality.GetInvestigatorType();
+        Coordination.SetRole(investigator, investigatorType);
+
+        Debug.Log($"{investigator} is {investigatorType}");
     }
 
     public void UpdateRoomStatus(RoomKnowledge roomKnowledge)
@@ -83,12 +88,21 @@ public class ToDoList
         }
         if (enteredRoom)
         {
-            if (!lightOn)
+            if (!lightOn && !clash)
             {
-                return new ActionList(investigatorState, currentRoom, "Light");
+                ActionList newActionList = new ActionList(investigatorState, currentRoom, "Light");
+                Coordination.SetActionList(newActionList);
+                if (Coordination.CheckSameAction(investigatorState))
+                {
+                    clash = true;
+                    return new ActionList(investigatorState, currentRoom, "Clash");
+                }
+                return newActionList;
             } 
 
             enteredRoom = false;
+            clash = false;
+            
 
             if (SearchOrExplore() && !Coordination.HasRoomBeenSearch(currentRoom)) // true is search
             {

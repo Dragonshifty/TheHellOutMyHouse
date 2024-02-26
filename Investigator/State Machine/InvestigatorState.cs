@@ -72,6 +72,12 @@ public class InvestigatorState : MonoBehaviour
         StartAction(room);
     }
 
+    public void FindHiding(string room)
+    {
+        currentState = GetComponent<FindHidingSpot>();
+        StartAction(room);
+    }
+
     public IActivate GetCurrentState()
     {
         return currentState;

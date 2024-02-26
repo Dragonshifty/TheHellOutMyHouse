@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class FlickLightSwitch : MonoBehaviour, IActivate
 {
     NavMeshAgent investigator;
+    Coroutine currentCoroutine;
     private LightswitchInfo lightswitchInfo;
     private Dictionary<string, Transform> lightswitches;
     public void DoYourThing(string name, string room)
@@ -26,7 +27,7 @@ public class FlickLightSwitch : MonoBehaviour, IActivate
         Vector3 destination = lightswitches[waypointName].position;
         investigator.destination = destination;
 
-        StartCoroutine(CheckForDestinationReached(destination));
+        currentCoroutine = StartCoroutine(CheckForDestinationReached(destination));
     }
 
     private IEnumerator CheckForDestinationReached(Vector3 destination)

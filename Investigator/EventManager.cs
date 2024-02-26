@@ -10,6 +10,7 @@ public static class EventManager
     public static event Action <GameObject> HaveFinishedTask;
     public static event Action <GameObject> HaveEnteredRoom;
     public static event Action <GameObject> HaveChangedLights;
+    public static event Action <GameObject> FleeHouse;
     
     
 
@@ -37,5 +38,10 @@ public static class EventManager
     public static void ChangedLights(GameObject gameObject)
     {
         HaveChangedLights?.Invoke(gameObject);
+    }
+
+    public static void RunAway(GameObject gameObject)
+    {
+        FleeHouse?.Invoke(gameObject);
     }
 }

@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class HighlightLights : MonoBehaviour
 {
-    private void OnDrawGizmos()
+    [SerializeField] private Color gizmoColour = Color.yellow;
+    private void OnDrawGizmosSelected()
     {
+        Gizmos.color = gizmoColour;
+
         foreach (Transform child in transform)
         {
-                Vector3 highlightArea = new Vector3(1, 1, 1);
-
-                Gizmos.color = Color.yellow;
                 Gizmos.DrawSphere(child.position, .5f);
-            
         }
     }
 }
