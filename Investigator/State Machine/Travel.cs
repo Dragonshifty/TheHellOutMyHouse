@@ -80,4 +80,9 @@ public class Travel : MonoBehaviour, IActivate
     {
         return Vector3.Distance(transform.position, currentDestination);
     }
+
+    public void CancelAll()
+    {
+        StopAllCoroutines();
+    }
 }

@@ -1,13 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GroupInventory : MonoBehaviour
 {
-    [SerializeField] private int flashLight = 2;
-    [SerializeField] private int UV = 2;
-    [SerializeField] private int EMF = 2;
-    [SerializeField] private int thermometer = 2;
+    private Dictionary<string, int> gearLocker = new Dictionary<string, int>
+    {
+        { "flashLight", 2},
+        { "UV", 2 },
+        { "EMF", 2 },
+        { "thermometer", 2}
+    };
 
     public bool GetItem(string item)
     {
@@ -16,14 +21,14 @@ public class GroupInventory : MonoBehaviour
             default:
                 Debug.Log("Get Item defaulted");
                 return false;
-            case "flasLight":
-                return --flashLight >= 0;
+            case "flashLight":
+                return --gearLocker["flashLight"] >= 0;
             case "UV":
-                return --UV >= 0;
+                return --gearLocker["UV"] >= 0;
             case "EMF":
-                return --EMF >= 0;
+                return --gearLocker["EMF"] >= 0;
             case "thermometer":
-                return --thermometer >= 0;
+                return --gearLocker["thermometer"] >= 0;
         }
     }
     
@@ -34,18 +39,48 @@ public class GroupInventory : MonoBehaviour
             default:
                 Debug.Log("put Item defaulted");
                 break;
-            case "flasLight":
-                flashLight++;
+            case "flashLight":
+                gearLocker["flashLight"]++;
                 break;
             case "UV":
-                UV++;
+                gearLocker["UV"]++;
                 break;
             case "EMF":
-                EMF++;
+                gearLocker["EMF"]++;
                 break;
             case "thermometer":
-                thermometer++;
+                gearLocker["thermometer"]++;
                 break;
         }
+    }
+
+    public string GetRandomGear()
+    {
+        List<string> gearList = new List<string>();
+
+        foreach (KeyValuePair<string, int> entry in gearLocker)
+        {
+            if (entry.Key != "flashLight" && entry.Value > 0)
+            {
+                gearList.Add(entry.Key);
+            }
+        }
+        int gearListCount = gearList.Count;
+
+        if (gearListCount == 0) return "Nothing";
+        if (gearListCount == 1)
+        {
+            if (GetItem(gearList[0])) return gearList[0];
+            else return "nothing";
+        } 
+
+        int index = UnityEngine.Random.Range(0, gearListCount);
+
+        if (GetItem(gearList[index]))
+        {
+            return gearList[index];
+        };
+
+        return "Nothing";
     }
 }

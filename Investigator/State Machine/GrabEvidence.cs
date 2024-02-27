@@ -1,18 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine;
 
-public class GoToRoom : MonoBehaviour, IActivate
+public class GrabEvidence : MonoBehaviour, IActivate
 {
-    NavMeshAgent investigator;    
+
+
+    NavMeshAgent investigator;
     HouseInfo houseInfo;
     Coroutine currentCoroutine;
 
-    Dictionary <string, Transform> roomWaypoints;
-    private void Start() 
+    Dictionary<string, Transform> roomWaypoints;
+    private void Start()
     {
-        investigator = GetComponent<NavMeshAgent>();  
+        investigator = GetComponent<NavMeshAgent>();
         houseInfo = FindObjectOfType<HouseInfo>();
         if (houseInfo != null)
         {
@@ -34,7 +36,7 @@ public class GoToRoom : MonoBehaviour, IActivate
     private void MoveToDestination(string waypointName)
     {
         // Debug.Log(waypointName);
-        Vector3 destination = roomWaypoints[waypointName].position;
+        Vector3 destination = roomWaypoints["Outside"].position;
         investigator.destination = destination;
 
         currentCoroutine = StartCoroutine(CheckForDestinationReached(destination));

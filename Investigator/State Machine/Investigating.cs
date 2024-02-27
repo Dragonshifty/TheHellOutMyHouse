@@ -63,4 +63,9 @@ public class Investigating : MonoBehaviour, IActivate
             }
         return false;
     }
+
+    public void CancelAll()
+    {
+        throw new NotImplementedException();
+    }
 }

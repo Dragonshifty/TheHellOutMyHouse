@@ -54,4 +54,13 @@ public class FlickLightSwitch : MonoBehaviour, IActivate
         EventManager.FinishedTask(gameObject);
         
     }
+
+    public void CancelAll()
+    {
+        if (currentCoroutine != null)
+        {
+            StopAllCoroutines();
+            currentCoroutine = null;
+        }
+    }
 }

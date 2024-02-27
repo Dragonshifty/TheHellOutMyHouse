@@ -20,17 +20,6 @@ public class SearchRoom : MonoBehaviour, IActivate
         StartSearch();
     }
 
-    private void Update() {
-        if (Input.GetKey(KeyCode.S))
-        {
-            if (currentCoroutine != null) StopCoroutine(currentCoroutine);
-            currentCoroutine = null;
-            Debug.Log("Stopped");
-        }
-    }    
-
-    
-
     public void StartSearch()
     {
         counter = UnityEngine.Random.Range(3, 10);
@@ -42,11 +31,10 @@ public class SearchRoom : MonoBehaviour, IActivate
     private void MoveToDestination()
     {
         int index = UnityEngine.Random.Range(0, roomWaypoints.Count);
-        // Debug.Log(index + " waypoints");
+
         if (roomWaypoints.Count == 0)
         {
             Debug.LogError("No waypoints available.");
-            // return Vector3.zero; // Or any default position you prefer
         }
         Vector3 destination = roomWaypoints[index].position;
         investigator.destination = destination;
@@ -90,5 +78,14 @@ public class SearchRoom : MonoBehaviour, IActivate
         int holdtime = UnityEngine.Random.Range(1, 5);
         yield return new WaitForSeconds(holdtime);
         MoveToDestination();
+    }
+
+    public void CancelAll()
+    {
+        if (currentCoroutine != null)
+        {
+            StopAllCoroutines();
+            currentCoroutine = null;
+        }
     }
 }

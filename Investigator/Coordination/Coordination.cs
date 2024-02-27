@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using PersonalitySpace;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class Coordination 
 {
     private static Dictionary<InvestigatorState, ActionList> actionLists = new Dictionary<InvestigatorState, ActionList>();
-    private static Dictionary<string, string> investigatorRoles = new Dictionary<string, string>();
+    private static Dictionary<string, Personality> investigatorRoles = new Dictionary<string, Personality>();
     private static Dictionary<string, bool> roomsSearched = new Dictionary<string, bool>
     {
         { "Outside", true },
@@ -40,9 +41,9 @@ public class Coordination
         }
     }
 
-    public static void SetRole(string name, string role)
+    public static void SetRole(string name, Personality personality)
     {
-        investigatorRoles[name] = role;
+        investigatorRoles[name] = personality;
     }
 
     public static void SetActionList(ActionList actionList)
@@ -66,5 +67,10 @@ public class Coordination
             }
         }
         return false;
+    }
+
+    public static Personality GetPersonality(string investigatorName)
+    {
+        return investigatorRoles[investigatorName];
     }
 }

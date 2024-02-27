@@ -33,6 +33,9 @@ public class BubbleText
             case "FindHiding":
                 bubbleText.text = "Finding Hiding Spot";
                 break;
+            case "GrabEvidence":
+                bubbleText.text = "Grabbing new evidence";
+                break;
         }
     }
 }

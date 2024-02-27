@@ -13,8 +13,9 @@ public class InvestigatorState : MonoBehaviour
     {   
         currentState = GetComponent<Idle>();
         EventManager.HaveArrived += gameObject => ArrivedAtDestination(gameObject);
-        EventManager.HaveInvestigated += gameObject => FinishedInvestigating(gameObject);
+        // EventManager.HaveInvestigated += gameObject => FinishedInvestigating(gameObject);
         EventManager.HaveFinishedTask += gameObject => FinishedTask(gameObject);
+        EventManager.CancelAction += StopAction;
         // StartAction();
     }
 
@@ -27,6 +28,12 @@ public class InvestigatorState : MonoBehaviour
     {
         currentState.DoYourThing(investigatorName, roomName);
     }
+
+    private void StopAction()
+    {
+        currentState.CancelAll();
+        currentState = GetComponent<Idle>();
+    }
     public void ArrivedAtDestination(GameObject gameObject)
     {
         if (gameObject == this.gameObject)
@@ -37,14 +44,14 @@ public class InvestigatorState : MonoBehaviour
         
     }
 
-    public void FinishedInvestigating(GameObject gameObject)
-    {
-        if (gameObject == this.gameObject)
-        {
-            currentState = GetComponent<Travel>();
-            // StartAction();
-        } 
-    }
+    // public void FinishedInvestigating(GameObject gameObject)
+    // {
+    //     if (gameObject == this.gameObject)
+    //     {
+    //         currentState = GetComponent<Travel>();
+    //         // StartAction();
+    //     } 
+    // }
 
     private void FinishedTask(GameObject gameObject)
     {
@@ -75,6 +82,12 @@ public class InvestigatorState : MonoBehaviour
     public void FindHiding(string room)
     {
         currentState = GetComponent<FindHidingSpot>();
+        StartAction(room);
+    }
+
+    public void GrabNewEvidence(string room)
+    {
+        currentState = GetComponent<GrabEvidence>();
         StartAction(room);
     }
 

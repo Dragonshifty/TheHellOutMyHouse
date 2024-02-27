@@ -45,6 +45,7 @@ public class InvestigatorController : MonoBehaviour
         EventManager.HaveFinishedTask += gameObject => SetIdle(gameObject);
         EventManager.HaveEnteredRoom += gameObject => GetRoomInfo(gameObject);
         EventManager.HaveChangedLights += gameObject => UpdateLights(gameObject);
+        EventManager.HaveFoundHidingSpot += gameObject => UpdateHidingSpot(gameObject);
         StartInvestigation();
     }
 
@@ -67,40 +68,41 @@ public class InvestigatorController : MonoBehaviour
         {
             SendMessageToBubbles(nextAction);
 
-            if (nextAction.Action.Equals("Travel"))
+            switch (nextAction.Action)
             {
-
-                nextAction.InvestigatorState.ChangeRoom(nextAction.Room);
-            }
-
-            if (nextAction.Action.Equals("Light"))
-            {
-                nextAction.InvestigatorState.TurnOnLight(nextAction.Room);                
-            }
-
-            if (nextAction.Action.Equals("Search"))
-            {
-                nextAction.InvestigatorState.SearchRoom(nextAction.Room);
-            }
-
-            if (nextAction.Action.Equals("FindHiding"))
-            {
-                nextAction.InvestigatorState.FindHiding(nextAction.Room);
-            }
-
-            if (nextAction.Action.Equals("Clash"))
-            {
-                IssueOrder(investigatorToDoLists[nextAction.InvestigatorState.gameObject]);
+                default:
+                    Debug.LogError("Action List Error. String typo?");
+                    break;
+                case "Travel":
+                    nextAction.InvestigatorState.ChangeRoom(nextAction.Room);
+                    break;
+                case "Light":
+                    nextAction.InvestigatorState.TurnOnLight(nextAction.Room);
+                    break;
+                case "Search":
+                    nextAction.InvestigatorState.SearchRoom(nextAction.Room);
+                    break;
+                case "FindHiding":
+                    nextAction.InvestigatorState.FindHiding(nextAction.Room);
+                    break;
+                case "Clash":
+                    IssueOrder(investigatorToDoLists[nextAction.InvestigatorState.gameObject]);
+                    break;
+                case "GrabEvidence":
+                    nextAction.InvestigatorState.GrabNewEvidence(nextAction.Room);
+                    break;
             }
         }
     }
 
     private void Update() 
     {
-        if (Input.GetKey(KeyCode.L))
+        if (Input.GetKeyDown(KeyCode.L))
         {
-            samState.ChangeRoom("LivingRoom");
-            simonState.ChangeRoom("LivingRoom");
+            Debug.Log("Cancel");
+            EventManager.CancelActions();
+            // samState.ChangeRoom("LivingRoom");
+            // simonState.ChangeRoom("LivingRoom");
         }    
     }
 
@@ -126,7 +128,7 @@ public class InvestigatorController : MonoBehaviour
         bool lightStatus = roomKnowledge.GetLightStatus();
 
         investigatorToDoLists[investigator].UpdateRoomStatus(roomKnowledge);
-        Debug.Log(investigatorName + room + " Light is " + lightStatus);
+        // Debug.Log(investigatorName + room + " Light is " + lightStatus);
     }
 
     private void UpdateLights(GameObject investigator)
@@ -145,5 +147,10 @@ public class InvestigatorController : MonoBehaviour
         investigatorToDoLists[investigator].UpdateRoomStatus(roomKnowledge);
 
         // Debug.Log(roomKnowledge.GetRoomName() + " " + "light is " + roomKnowledge.GetLightStatus());
+    }
+
+    private void UpdateHidingSpot(GameObject investigator)
+    {
+        investigatorToDoLists[investigator].UpdateHidingSpot();
     }
 }

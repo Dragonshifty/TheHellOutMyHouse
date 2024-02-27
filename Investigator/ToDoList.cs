@@ -15,12 +15,14 @@ public class ToDoList
     private Personality personality;
     private InvestigatorState investigatorState;
     private GroupInventory groupInventory;
+    private string inventorySlotOne = "";
+    private string inventorySlotTwo = "";
     private bool inHouse;
-    private bool enteredRoom;
     private bool clash;
     private Explore explore = new Explore();
     private Coordination coordination;
     private Dictionary<string, bool> roomsVisited = HouseRoomReturn.GetStarterHouseRooms();
+    private Dictionary<string, bool> hidingSpotsFound = HouseRoomReturn.GetStarterHouseRooms();
     
     public ToDoList(string investigator, InvestigatorState investigatorState, GroupInventory groupInventory)
     {
@@ -37,7 +39,6 @@ public class ToDoList
         get { return currentRoom; } 
         set { currentRoom = value; }
     }
-
 
     public void GetPersonality()
     {
@@ -64,7 +65,7 @@ public class ToDoList
         }
 
         investigatorType = personality.GetInvestigatorType();
-        Coordination.SetRole(investigator, investigatorType);
+        Coordination.SetRole(investigator, personality);
 
         Debug.Log($"{investigator} is {investigatorType}");
     }
@@ -76,50 +77,56 @@ public class ToDoList
         roomTemerature = roomKnowledge.GetRoomTemperature();
     }
 
+    public void UpdateHidingSpot()
+    {
+        Debug.Log("Found Hiding Spot, Logging");
+        hidingSpotsFound[currentRoom] = true;
+    }
+
     public ActionList GetNextAction()
     {
         if (!inHouse)
         {
             inHouse = true;
-            enteredRoom = true;
 
             return new ActionList(investigatorState, "LivingRoom", "Travel");
-
         }
-        if (enteredRoom)
+
+        if (!lightOn && !clash)
         {
-            if (!lightOn && !clash)
+            ActionList newActionList = new ActionList(investigatorState, currentRoom, "Light");
+            Coordination.SetActionList(newActionList);
+            if (Coordination.CheckSameAction(investigatorState))
             {
-                ActionList newActionList = new ActionList(investigatorState, currentRoom, "Light");
-                Coordination.SetActionList(newActionList);
-                if (Coordination.CheckSameAction(investigatorState))
-                {
-                    clash = true;
-                    return new ActionList(investigatorState, currentRoom, "Clash");
-                }
-                return newActionList;
-            } 
-
-            enteredRoom = false;
-            clash = false;
+                clash = true;
+                return new ActionList(investigatorState, currentRoom, "Clash");
+            }
+            return newActionList;
+        } 
             
+            // enteredRoom = false;
+        clash = false;
 
-            if (SearchOrExplore() && !Coordination.HasRoomBeenSearch(currentRoom)) // true is search
+        if (inventorySlotOne.Equals(""))
+        {
+            inventorySlotOne = groupInventory.GetRandomGear();
+            Debug.Log(investigatorState.GetInvestigatorName() + " took " + inventorySlotOne);
+            return new ActionList(investigatorState, "Outside", "GrabEvidence");
+        }
+        
+
+        if (SearchOrExplore() && !Coordination.HasRoomBeenSearch(currentRoom)) // true is search
             {
-                enteredRoom = true;
                 Coordination.SetRoomSearched(currentRoom, true);
-                return new ActionList(investigatorState, currentRoom, "Search");
+                return new ActionList(investigatorState, currentRoom, "FindHiding");
             } else
             {
-                enteredRoom = true;
                 string chosenRoom = explore.ChooseNewRoom(roomsVisited);
                 return new ActionList(investigatorState, chosenRoom, "Travel");
             }
 
-        }
-
-        Debug.Log("Fin");
-        return null;
+        // Debug.Log("Fin");
+        // return null;
     }
 
     private bool SearchOrExplore()
