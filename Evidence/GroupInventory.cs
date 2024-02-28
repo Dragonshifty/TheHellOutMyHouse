@@ -22,13 +22,13 @@ public class GroupInventory : MonoBehaviour
                 Debug.Log("Get Item defaulted");
                 return false;
             case "flashLight":
-                return --gearLocker["flashLight"] >= 0;
+                return gearLocker["flashLight"] > 0 ? gearLocker["flashLight"]-- >= 0 : false;
             case "UV":
-                return --gearLocker["UV"] >= 0;
+                return gearLocker["UV"] > 0 ? gearLocker["UV"]-- >= 0 : false;
             case "EMF":
-                return --gearLocker["EMF"] >= 0;
+                return gearLocker["EMF"] > 0 ? gearLocker["EMF"]-- >= 0 : false;
             case "thermometer":
-                return --gearLocker["thermometer"] >= 0;
+                return gearLocker["thermometer"] > 0 ? gearLocker["thermometer"]-- >= 0 : false;
         }
     }
     

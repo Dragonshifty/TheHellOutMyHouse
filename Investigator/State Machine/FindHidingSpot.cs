@@ -102,13 +102,17 @@ public class FindHidingSpot : MonoBehaviour, IActivate
             CancelAll();
             EventManager.FoundHidingSpot(gameObject);
             EventManager.FinishedTask(gameObject);
+        } else
+        {
+            MoveToDestination();
         }
-        MoveToDestination();
+        
     }
 
     private bool FindSpot()
     {
         int chance = UnityEngine.Random.Range(0, 11);
+        // if (CheckDistance(hidingSpot.position) < 1f) return true;
         if (CheckDistance(hidingSpot.position) < 1f && chance <= hidingLevel) return true;
         return false;
     }

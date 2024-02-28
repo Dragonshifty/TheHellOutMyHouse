@@ -19,6 +19,8 @@ public class InvestigatorController : MonoBehaviour
     GameObject simonObject;
     TextMeshPro samText;
     TextMeshPro simonText;
+    [SerializeField] Transform samTextTransform;
+    [SerializeField] Transform simonTextTransform;
     Dictionary <InvestigatorState, TextMeshPro> textBubbles = new Dictionary<InvestigatorState, TextMeshPro>();
     Dictionary<GameObject, ToDoList> investigatorToDoLists = new Dictionary<GameObject, ToDoList>();
 
@@ -49,7 +51,20 @@ public class InvestigatorController : MonoBehaviour
         StartInvestigation();
     }
 
-    
+    private void LateUpdate() 
+    {
+        if (samTextTransform != null)
+        {
+            samTextTransform.LookAt(samTextTransform.position + mainCamera.transform.rotation * Vector3.forward,
+                mainCamera.transform.rotation * Vector3.up);
+        }
+
+        if (simonTextTransform != null)
+        {
+            simonTextTransform.LookAt(simonTextTransform.position + mainCamera.transform.rotation * Vector3.forward,
+                mainCamera.transform.rotation * Vector3.up);
+        }
+    }
 
     private void StartInvestigation()
     {
@@ -152,5 +167,23 @@ public class InvestigatorController : MonoBehaviour
     private void UpdateHidingSpot(GameObject investigator)
     {
         investigatorToDoLists[investigator].UpdateHidingSpot();
+    }
+
+    private void MinorEvent(Transform eventPosition)
+    {
+        foreach (KeyValuePair<GameObject, ToDoList> entry in investigatorToDoLists)
+        {
+            if (Vector3.Distance(entry.Key.transform.position, eventPosition.position) < 10f)
+            {
+                InvestigatorState investigator = entry.Key.GetComponent<InvestigatorState>();
+                investigator.StopAction();
+
+            }
+        }
+    }
+
+    private void MinorEventAction(ToDoList investigatorToDoList)
+    {
+        ActionList nextAction = investigatorToDoList.GetMinorEventAction();
     }
 }

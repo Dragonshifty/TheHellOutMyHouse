@@ -12,12 +12,15 @@ public class InvestigatorState : MonoBehaviour
     private void Start() 
     {   
         currentState = GetComponent<Idle>();
-        EventManager.HaveArrived += gameObject => ArrivedAtDestination(gameObject);
+        // EventManager.HaveArrived += gameObject => ArrivedAtDestination(gameObject);
         // EventManager.HaveInvestigated += gameObject => FinishedInvestigating(gameObject);
-        EventManager.HaveFinishedTask += gameObject => FinishedTask(gameObject);
+        // EventManager.HaveFinishedTask += gameObject => FinishedTask(gameObject);
         EventManager.CancelAction += StopAction;
+        // rigidbody = GetComponent<Rigidbody>();
         // StartAction();
     }
+
+   
 
     public string GetInvestigatorName()
     {
@@ -29,20 +32,20 @@ public class InvestigatorState : MonoBehaviour
         currentState.DoYourThing(investigatorName, roomName);
     }
 
-    private void StopAction()
+    public void StopAction()
     {
         currentState.CancelAll();
         currentState = GetComponent<Idle>();
     }
-    public void ArrivedAtDestination(GameObject gameObject)
-    {
-        if (gameObject == this.gameObject)
-        {
-            currentState = GetComponent<Investigating>();
-            // StartAction();
-        }
+    // public void ArrivedAtDestination(GameObject gameObject)
+    // {
+    //     if (gameObject == this.gameObject)
+    //     {
+    //         currentState = GetComponent<Investigating>();
+    //         // StartAction();
+    //     }
         
-    }
+    // }
 
     // public void FinishedInvestigating(GameObject gameObject)
     // {
@@ -53,13 +56,13 @@ public class InvestigatorState : MonoBehaviour
     //     } 
     // }
 
-    private void FinishedTask(GameObject gameObject)
-    {
-        if (gameObject == this.gameObject)
-        {
-            currentState = GetComponent<Idle>();
-        }
-    }
+    // private void FinishedTask(GameObject gameObject)
+    // {
+    //     if (gameObject == this.gameObject)
+    //     {
+    //         currentState = GetComponent<Idle>();
+    //     }
+    // }
 
     public void ChangeRoom(string room)
     {
@@ -91,8 +94,15 @@ public class InvestigatorState : MonoBehaviour
         StartAction(room);
     }
 
+    public void InvestigateMinorEvent(Transform eventPosition)
+    {
+        
+    }
+
     public IActivate GetCurrentState()
     {
         return currentState;
     }
+
+
 }

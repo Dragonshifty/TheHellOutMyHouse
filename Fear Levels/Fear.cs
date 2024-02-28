@@ -6,7 +6,7 @@ using TMPro;
 public class Fear : MonoBehaviour
 {
     private int fear;
-    [SerializeField] int multiplier = 1;
+    [SerializeField] public int multiplier = 1;
     [SerializeField] TextMeshProUGUI fearPercentage;
     // Start is called before the first frame update
     void Start()

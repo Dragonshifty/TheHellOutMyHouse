@@ -16,11 +16,10 @@ public class ToDoList
     private InvestigatorState investigatorState;
     private GroupInventory groupInventory;
     private string inventorySlotOne = "";
-    private string inventorySlotTwo = "";
+    // private string inventorySlotTwo = "";
     private bool inHouse;
     private bool clash;
     private Explore explore = new Explore();
-    private Coordination coordination;
     private Dictionary<string, bool> roomsVisited = HouseRoomReturn.GetStarterHouseRooms();
     private Dictionary<string, bool> hidingSpotsFound = HouseRoomReturn.GetStarterHouseRooms();
     
@@ -85,6 +84,7 @@ public class ToDoList
 
     public ActionList GetNextAction()
     {
+        
         if (!inHouse)
         {
             inHouse = true;
@@ -104,7 +104,6 @@ public class ToDoList
             return newActionList;
         } 
             
-            // enteredRoom = false;
         clash = false;
 
         if (inventorySlotOne.Equals(""))
@@ -124,9 +123,11 @@ public class ToDoList
                 string chosenRoom = explore.ChooseNewRoom(roomsVisited);
                 return new ActionList(investigatorState, chosenRoom, "Travel");
             }
+    }
 
-        // Debug.Log("Fin");
-        // return null;
+    public ActionList GetMinorEventAction()
+    {
+        return new ActionList(investigatorState, currentRoom, "Travel");
     }
 
     private bool SearchOrExplore()
@@ -137,9 +138,6 @@ public class ToDoList
         return false;
     }
 
-    private bool CheckInHouse()
-    {
-        return inHouse;
-    }
+
 
 }
