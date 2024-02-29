@@ -36,6 +36,9 @@ public class BubbleText
             case "GrabEvidence":
                 bubbleText.text = "Grabbing new evidence";
                 break;
+            case "MinorEvent":
+                bubbleText.text = "Minor Event";
+                break;
         }
     }
 }

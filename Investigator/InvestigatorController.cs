@@ -48,6 +48,8 @@ public class InvestigatorController : MonoBehaviour
         EventManager.HaveEnteredRoom += gameObject => GetRoomInfo(gameObject);
         EventManager.HaveChangedLights += gameObject => UpdateLights(gameObject);
         EventManager.HaveFoundHidingSpot += gameObject => UpdateHidingSpot(gameObject);
+        EventManager.HaveStartedMinorEvent += position => MinorEvent(position);
+        EventManager.HaveCollectedGear += gameObject => CollectedGear(gameObject);
         StartInvestigation();
     }
 
@@ -174,16 +176,23 @@ public class InvestigatorController : MonoBehaviour
         foreach (KeyValuePair<GameObject, ToDoList> entry in investigatorToDoLists)
         {
             if (Vector3.Distance(entry.Key.transform.position, eventPosition.position) < 10f)
-            {
-                InvestigatorState investigator = entry.Key.GetComponent<InvestigatorState>();
-                investigator.StopAction();
-
+            {              
+                MinorEventAction(entry.Value, eventPosition);
             }
         }
     }
 
-    private void MinorEventAction(ToDoList investigatorToDoList)
+    private void MinorEventAction(ToDoList investigatorToDoList, Transform eventPosition)
     {
         ActionList nextAction = investigatorToDoList.GetMinorEventAction();
+
+        SendMessageToBubbles(nextAction);
+        nextAction.InvestigatorState.StopAction();
+        nextAction.InvestigatorState.InvestigateMinorEvent(eventPosition, nextAction.Room);
+    }
+
+    private void CollectedGear(GameObject investigator)
+    {
+        investigatorToDoLists[investigator].GetGear();
     }
 }

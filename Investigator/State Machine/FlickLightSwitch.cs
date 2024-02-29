@@ -10,7 +10,8 @@ public class FlickLightSwitch : MonoBehaviour, IActivate
     Coroutine currentCoroutine;
     private LightswitchInfo lightswitchInfo;
     private Dictionary<string, Transform> lightswitches;
-    public void DoYourThing(string name, string room)
+    
+    public void DoYourThing(Transform position, string room)
     {
         MoveToDestination(room);
     }

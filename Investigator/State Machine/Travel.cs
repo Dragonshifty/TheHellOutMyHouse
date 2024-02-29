@@ -1,3 +1,5 @@
+#pragma warning disable 
+
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
@@ -17,7 +19,7 @@ public class Travel : MonoBehaviour, IActivate
         roomInfo = new RoomInfo();
     }
 
-    public void DoYourThing(string name, string room)
+    public void DoYourThing(Transform position, string room)
     {
         investigatorName = name;
         #pragma warning disable 4014

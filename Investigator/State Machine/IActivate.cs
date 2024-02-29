@@ -3,6 +3,6 @@ using UnityEngine;
 
 public interface IActivate
 {
-    void DoYourThing(string name, string room);
+    void DoYourThing(Transform position, string room);
     void CancelAll();
 }

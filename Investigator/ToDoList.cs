@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using PersonalitySpace;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ToDoList 
@@ -16,7 +17,7 @@ public class ToDoList
     private InvestigatorState investigatorState;
     private GroupInventory groupInventory;
     private string inventorySlotOne = "";
-    // private string inventorySlotTwo = "";
+    private string inventorySlotTwo = "";
     private bool inHouse;
     private bool clash;
     private Explore explore = new Explore();
@@ -37,6 +38,15 @@ public class ToDoList
     { 
         get { return currentRoom; } 
         set { currentRoom = value; }
+    }
+
+    public string[] GetPersonalInventory()
+    {
+        return new string[]
+        {
+            inventorySlotOne,
+            inventorySlotTwo
+        };
     }
 
     public void GetPersonality()
@@ -64,7 +74,7 @@ public class ToDoList
         }
 
         investigatorType = personality.GetInvestigatorType();
-        Coordination.SetRole(investigator, personality);
+        Coordination.SetRole(investigatorState, personality);
 
         Debug.Log($"{investigator} is {investigatorType}");
     }
@@ -108,8 +118,6 @@ public class ToDoList
 
         if (inventorySlotOne.Equals(""))
         {
-            inventorySlotOne = groupInventory.GetRandomGear();
-            Debug.Log(investigatorState.GetInvestigatorName() + " took " + inventorySlotOne);
             return new ActionList(investigatorState, "Outside", "GrabEvidence");
         }
         
@@ -127,7 +135,7 @@ public class ToDoList
 
     public ActionList GetMinorEventAction()
     {
-        return new ActionList(investigatorState, currentRoom, "Travel");
+        return new ActionList(investigatorState, currentRoom, "MinorEvent");
     }
 
     private bool SearchOrExplore()
@@ -138,6 +146,29 @@ public class ToDoList
         return false;
     }
 
+    public void GetGear()
+    {
+        if (inventorySlotOne.Equals(""))
+        {
+            inventorySlotOne = groupInventory.GetRandomGear("Nothing");
+            Debug.Log(investigatorState.GetInvestigatorName() + " took " + inventorySlotOne);
+            return;
+        }
 
+        if (!inventorySlotOne.Equals("") && inventorySlotTwo.Equals(""))
+        {
+            inventorySlotTwo = groupInventory.GetRandomGear(inventorySlotOne);
+            Debug.Log(investigatorState.GetInvestigatorName() + " took " + inventorySlotTwo);
+            return;
+        }
+
+        if (!inventorySlotTwo.Equals(""))
+        {
+            groupInventory.PutItem(inventorySlotOne);
+            inventorySlotOne = inventorySlotTwo;
+            inventorySlotTwo = groupInventory.GetRandomGear(inventorySlotOne);            
+            Debug.Log(investigatorState.GetInvestigatorName() + " took " + inventorySlotTwo);
+        }
+    }
 
 }

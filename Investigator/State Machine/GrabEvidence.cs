@@ -7,14 +7,15 @@ public class GrabEvidence : MonoBehaviour, IActivate
 {
 
 
-    NavMeshAgent investigator;
+    NavMeshAgent investigatorAgent;
     HouseInfo houseInfo;
     Coroutine currentCoroutine;
 
     Dictionary<string, Transform> roomWaypoints;
+    
     private void Start()
     {
-        investigator = GetComponent<NavMeshAgent>();
+        investigatorAgent = GetComponent<NavMeshAgent>();
         houseInfo = FindObjectOfType<HouseInfo>();
         if (houseInfo != null)
         {
@@ -24,12 +25,12 @@ public class GrabEvidence : MonoBehaviour, IActivate
         {
             Debug.LogError("HouseInfo component is null!");
         }
-
     }
 
 
-    public void DoYourThing(string name, string room)
+    public void DoYourThing(Transform position, string room)
     {
+        
         MoveToDestination(room);
     }
 
@@ -37,7 +38,7 @@ public class GrabEvidence : MonoBehaviour, IActivate
     {
         // Debug.Log(waypointName);
         Vector3 destination = roomWaypoints["Outside"].position;
-        investigator.destination = destination;
+        investigatorAgent.destination = destination;
 
         currentCoroutine = StartCoroutine(CheckForDestinationReached(destination));
     }
@@ -62,6 +63,7 @@ public class GrabEvidence : MonoBehaviour, IActivate
 
     private void DestinationReached()
     {
+        EventManager.CollectedGear(gameObject);
         EventManager.FinishedTask(gameObject);
     }
 

@@ -25,15 +25,13 @@ public class GoToRoom : MonoBehaviour, IActivate
 
     }
 
-
-    public void DoYourThing(string name, string room)
+    public void DoYourThing(Transform position, string room)
     {
         MoveToDestination(room);
     }
 
     private void MoveToDestination(string waypointName)
     {
-        // Debug.Log(waypointName);
         Vector3 destination = roomWaypoints[waypointName].position;
         investigator.destination = destination;
 

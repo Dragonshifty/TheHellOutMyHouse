@@ -1,45 +1,39 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.AI;
 using UnityEngine;
+using UnityEngine.AI;
 
-public class SearchRoom : MonoBehaviour, IActivate
+public class InvestigateEvent : MonoBehaviour, IActivate
 {
-    List<Transform> roomWaypoints;
-    NavMeshAgent investigator;
-    private Coroutine currentCoroutine;
+    NavMeshAgent investigatorAgent;
+    InvestigatorState investigator;
+    Coroutine currentCoroutine;
+    Vector3 currentSpot;
+    Fear fear;
     private int counter;
-
+    List<string> inventory;
 
     private void Start() 
     {
-        investigator = GetComponent<NavMeshAgent>();
+        investigatorAgent = GetComponent<NavMeshAgent>();
+        investigator = GetComponent<InvestigatorState>();
+        fear = GetComponent<Fear>();
     }
+
     public void DoYourThing(Transform position, string room)
     {
-        StartSearch();
-    }
-
-    public void StartSearch()
-    {
+        fear.multiplier++;
         counter = UnityEngine.Random.Range(3, 10);
-        RoomKnowledge roomKnowledge = GetComponent<RoomKnowledge>();
-        roomWaypoints = roomKnowledge.GetRoomPoints();
-        MoveToDestination();
+        inventory = Coordination.GetInventory(investigator);
+        MoveToDestination(position);
     }
 
-    private void MoveToDestination()
+    private void MoveToDestination(Transform eventPosition)
     {
-        int index = UnityEngine.Random.Range(0, roomWaypoints.Count);
+        currentSpot = eventPosition.position;
+        investigatorAgent.destination = currentSpot;
 
-        if (roomWaypoints.Count == 0)
-        {
-            Debug.LogError("No waypoints available.");
-        }
-        Vector3 destination = roomWaypoints[index].position;
-        investigator.destination = destination;
-
-        currentCoroutine = StartCoroutine(CheckForDestinationReached(destination));
+        currentCoroutine = StartCoroutine(CheckForDestinationReached(currentSpot));
     }
 
     private IEnumerator CheckForDestinationReached(Vector3 destination)
@@ -60,6 +54,7 @@ public class SearchRoom : MonoBehaviour, IActivate
         return Vector3.Distance(transform.position, destination);
     }
 
+
     private void DestinationReached()
     {
         counter--;
@@ -67,7 +62,8 @@ public class SearchRoom : MonoBehaviour, IActivate
         {
             // MoveToDestination();
             currentCoroutine = StartCoroutine(HoldPlease());
-        } else
+        }
+        else
         {
             EventManager.FinishedTask(gameObject);
         }
@@ -76,8 +72,19 @@ public class SearchRoom : MonoBehaviour, IActivate
     private IEnumerator HoldPlease()
     {
         int holdtime = UnityEngine.Random.Range(1, 5);
+        investigatorAgent.destination = GetNewPosition();
         yield return new WaitForSeconds(holdtime);
-        MoveToDestination();
+        DestinationReached();
+    }
+
+    private Vector3 GetNewPosition()
+    {
+        float xPosition = UnityEngine.Random.Range(-1.5f, 1.5f);
+        float zPosition = UnityEngine.Random.Range(-1.5f, 1.5f);
+        Vector3 newPosition = currentSpot;
+        newPosition.x += xPosition;
+        newPosition.z += zPosition;
+        return newPosition;
     }
 
     public void CancelAll()

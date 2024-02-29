@@ -14,9 +14,9 @@ public class Investigating : MonoBehaviour, IActivate
     string investigatorName;
     private int timesDiscovered;
 
-    public void DoYourThing(string name, string room)
+    public void DoYourThing(Transform position, string room)
     {
-        investigatorName = name;
+        // investigatorName = name;
         #pragma warning disable 4014
         StartInvestigation();
     }

@@ -12,6 +12,8 @@ public static class EventManager
     public static event Action <GameObject> HaveChangedLights;
     public static event Action <GameObject> FleeHouse;
     public static event Action <GameObject> HaveFoundHidingSpot;
+    public static event Action <Transform> HaveStartedMinorEvent;
+    public static event Action <GameObject> HaveCollectedGear;
     public static event Action CancelAction;
     
 
@@ -48,6 +50,16 @@ public static class EventManager
     public static void FoundHidingSpot(GameObject gameObject)
     {
         HaveFoundHidingSpot?.Invoke(gameObject);
+    }
+
+    public static void StartedMinorEvent(Transform position)
+    {
+        HaveStartedMinorEvent?.Invoke(position);
+    }
+
+    public static void CollectedGear(GameObject gameObject)
+    {
+        HaveCollectedGear?.Invoke(gameObject);
     }
 
     public static void CancelActions()

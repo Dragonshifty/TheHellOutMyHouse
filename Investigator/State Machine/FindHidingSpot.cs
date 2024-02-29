@@ -6,8 +6,8 @@ using UnityEngine.AI;
 
 public class FindHidingSpot : MonoBehaviour, IActivate
 {
-    NavMeshAgent investigator;
-    string investigatorName;
+    NavMeshAgent investigatorAgent;
+    InvestigatorState investigator;
     List<Transform> roomWaypoints;
     Transform hidingSpot;
     Coroutine currentCoroutine;
@@ -17,7 +17,8 @@ public class FindHidingSpot : MonoBehaviour, IActivate
 
     private void Start()
     {
-        investigator = GetComponent<NavMeshAgent>();
+        investigator = GetComponent<InvestigatorState>();
+        investigatorAgent = GetComponent<NavMeshAgent>();
     }
 
     public void CancelAll()
@@ -26,22 +27,20 @@ public class FindHidingSpot : MonoBehaviour, IActivate
         if (currentCoroutine != null) currentCoroutine = null;
     }
 
-    public void DoYourThing(string name, string room)
+    public void DoYourThing(Transform position, string room)
     {
-        investigatorName = name;
         StartSearch();
     }
 
     public void StartSearch()
     {
-
         counter = UnityEngine.Random.Range(3, 10);
         RoomKnowledge roomKnowledge = GetComponent<RoomKnowledge>();
         roomWaypoints = roomKnowledge.GetRoomPoints();
         hidingSpot = roomKnowledge.GetHidingSpot();
         if (personality != null)
         {
-            personality = Coordination.GetPersonality(investigatorName);
+            personality = Coordination.GetRole(investigator);
             hidingLevel = personality.GetHidingLevel();
         }
         MoveToDestination();
@@ -56,7 +55,7 @@ public class FindHidingSpot : MonoBehaviour, IActivate
             Debug.LogError("No waypoints available.");
         }
         Vector3 destination = roomWaypoints[index].position;
-        investigator.destination = destination;
+        investigatorAgent.destination = destination;
 
         currentCoroutine = StartCoroutine(CheckForDestinationReached(destination));
     }
@@ -105,8 +104,7 @@ public class FindHidingSpot : MonoBehaviour, IActivate
         } else
         {
             MoveToDestination();
-        }
-        
+        }       
     }
 
     private bool FindSpot()

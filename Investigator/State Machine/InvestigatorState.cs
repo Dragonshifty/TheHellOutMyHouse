@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -6,11 +5,12 @@ public class InvestigatorState : MonoBehaviour
 {
 
     IActivate currentState;
-    
+    Transform transformCache;
     [SerializeField] string investigatorName;
-    // private string currentRoom = "Outside";
+    
     private void Start() 
     {   
+        transformCache = gameObject.transform;
         currentState = GetComponent<Idle>();
         // EventManager.HaveArrived += gameObject => ArrivedAtDestination(gameObject);
         // EventManager.HaveInvestigated += gameObject => FinishedInvestigating(gameObject);
@@ -27,9 +27,9 @@ public class InvestigatorState : MonoBehaviour
         return investigatorName;
     }
 
-    private void StartAction(string roomName)
+    private void StartAction(Transform position, string roomName)
     {
-        currentState.DoYourThing(investigatorName, roomName);
+        currentState.DoYourThing(position, roomName);
     }
 
     public void StopAction()
@@ -67,36 +67,38 @@ public class InvestigatorState : MonoBehaviour
     public void ChangeRoom(string room)
     {
         currentState = GetComponent<GoToRoom>();
-        StartAction(room);
+        StartAction(transformCache, room);
     }
 
     public void TurnOnLight(string room)
     {
         currentState = GetComponent<FlickLightSwitch>();
-        StartAction(room);
+        StartAction(transformCache, room);
     }
 
     public void SearchRoom(string room)
     {
         currentState = GetComponent<SearchRoom>();
-        StartAction(room);
+        StartAction(transformCache, room);
     }
 
     public void FindHiding(string room)
     {
         currentState = GetComponent<FindHidingSpot>();
-        StartAction(room);
+        StartAction(transformCache, room);
     }
 
     public void GrabNewEvidence(string room)
     {
         currentState = GetComponent<GrabEvidence>();
-        StartAction(room);
+        StartAction(transformCache, room);
     }
 
-    public void InvestigateMinorEvent(Transform eventPosition)
+    public void InvestigateMinorEvent(Transform eventPosition, string room)
     {
         
+         currentState = GetComponent<InvestigateEvent>();
+        StartAction(eventPosition, room);
     }
 
     public IActivate GetCurrentState()

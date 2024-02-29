@@ -9,7 +9,7 @@ public class Idle : MonoBehaviour, IActivate
         
     }
 
-    public void DoYourThing(string name, string room)
+    public void DoYourThing(Transform position, string room)
     {
         
     }
