@@ -40,13 +40,10 @@ public class ToDoList
         set { currentRoom = value; }
     }
 
-    public string[] GetPersonalInventory()
+    public void InitialiseInvestigator()
     {
-        return new string[]
-        {
-            inventorySlotOne,
-            inventorySlotTwo
-        };
+        GetPersonality();
+        SetCoordinateInventory();
     }
 
     public void GetPersonality()
@@ -169,6 +166,18 @@ public class ToDoList
             inventorySlotTwo = groupInventory.GetRandomGear(inventorySlotOne);            
             Debug.Log(investigatorState.GetInvestigatorName() + " took " + inventorySlotTwo);
         }
+
+        SetCoordinateInventory();
+    }
+
+    private void SetCoordinateInventory()
+    {
+        List<string> inventory = new List<string>()
+        {
+            inventorySlotOne,
+            inventorySlotTwo
+        };
+        Coordination.SetInventory(investigatorState, inventory);
     }
 
 }

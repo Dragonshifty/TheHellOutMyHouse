@@ -18,39 +18,39 @@ public class Investigating : MonoBehaviour, IActivate
     {
         // investigatorName = name;
         #pragma warning disable 4014
-        StartInvestigation();
+        // StartInvestigation();
     }
 
-    public async Task StartInvestigation()
-    {
-        await Investigate();
-        // EventManager.FinishedInvestigating(gameObject);
-        EventManager.FinishedTask(gameObject);
-    }
+    // public async Task StartInvestigation()
+    // {
+    //     await Investigate();
+    //     // EventManager.FinishedInvestigating(gameObject);
+    //     EventManager.FinishedTask(gameObject);
+    // }
 
-    private async Task Investigate()
-    {
-        int timer = UnityEngine.Random.Range(3, 10);
-        bool isSuccessful = false;
+    // private async Task Investigate()
+    // {
+    //     int timer = UnityEngine.Random.Range(3, 10);
+    //     bool isSuccessful = false;
         
-        while (timer >= 0)
-        {
-            await Task.Delay(1000);
-            // Debug.Log($"{investigatorName} Investigating for {timer}");
-            status.text = $"{investigatorName} Investigating for {timer}";
-            if (EvidenceController.simonInRange && gameObject.tag.Equals("Simon"))
-            {
-                if (Detection()){ isSuccessful = true; break; }
-            } 
-            else if (EvidenceController.samInRange && gameObject.tag.Equals("Sam"))
-            {
-                if (Detection()) { isSuccessful = true; break; }
-            }
-            timer--;
-        }   
-        if (!isSuccessful) status.text = $"{investigatorName} Finished investigating";
-        // Debug.Log($"{investigatorName} Finished investigating");
-    }
+    //     while (timer >= 0)
+    //     {
+    //         await Task.Delay(1000);
+    //         // Debug.Log($"{investigatorName} Investigating for {timer}");
+    //         status.text = $"{investigatorName} Investigating for {timer}";
+    //         if (EvidenceController.simonInRange && gameObject.tag.Equals("Simon"))
+    //         {
+    //             if (Detection()){ isSuccessful = true; break; }
+    //         } 
+    //         else if (EvidenceController.samInRange && gameObject.tag.Equals("Sam"))
+    //         {
+    //             if (Detection()) { isSuccessful = true; break; }
+    //         }
+    //         timer--;
+    //     }   
+    //     if (!isSuccessful) status.text = $"{investigatorName} Finished investigating";
+    //     // Debug.Log($"{investigatorName} Finished investigating");
+    // }
 
     private bool Detection()
     {

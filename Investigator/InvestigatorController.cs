@@ -8,23 +8,16 @@ using Unity.VisualScripting;
 
 public class InvestigatorController : MonoBehaviour
 {
-    private Camera mainCamera;
     private InvestigatorState samState;
     private InvestigatorState simonState;
-    private BubbleText bubbleText = new BubbleText();
+    private BubbleText bubbleText;
     
     [SerializeField] Transform frontDoor;
     
     GameObject samObject;
     GameObject simonObject;
-    TextMeshPro samText;
-    TextMeshPro simonText;
-    [SerializeField] Transform samTextTransform;
-    [SerializeField] Transform simonTextTransform;
-    Dictionary <InvestigatorState, TextMeshPro> textBubbles = new Dictionary<InvestigatorState, TextMeshPro>();
     Dictionary<GameObject, ToDoList> investigatorToDoLists = new Dictionary<GameObject, ToDoList>();
 
-    
     private void Awake() 
     {
         samObject = GameObject.FindGameObjectWithTag("Sam");
@@ -36,14 +29,10 @@ public class InvestigatorController : MonoBehaviour
         investigatorToDoLists[samObject] = new ToDoList("Sam", samState, groupInventory);
         investigatorToDoLists[simonObject] = new ToDoList("Simon", simonState, groupInventory);
 
-        samText = samObject.GetComponentInChildren<TextMeshPro>();
-        simonText = simonObject.GetComponentInChildren<TextMeshPro>();
-        textBubbles[samState] = samText;
-        textBubbles[simonState] = simonText;
+        bubbleText = FindObjectOfType<BubbleText>();
     }
     void Start()
     {
-        mainCamera = Camera.main;
         EventManager.HaveFinishedTask += gameObject => SetIdle(gameObject);
         EventManager.HaveEnteredRoom += gameObject => GetRoomInfo(gameObject);
         EventManager.HaveChangedLights += gameObject => UpdateLights(gameObject);
@@ -53,25 +42,10 @@ public class InvestigatorController : MonoBehaviour
         StartInvestigation();
     }
 
-    private void LateUpdate() 
+        private void StartInvestigation()
     {
-        if (samTextTransform != null)
-        {
-            samTextTransform.LookAt(samTextTransform.position + mainCamera.transform.rotation * Vector3.forward,
-                mainCamera.transform.rotation * Vector3.up);
-        }
-
-        if (simonTextTransform != null)
-        {
-            simonTextTransform.LookAt(simonTextTransform.position + mainCamera.transform.rotation * Vector3.forward,
-                mainCamera.transform.rotation * Vector3.up);
-        }
-    }
-
-    private void StartInvestigation()
-    {
-        investigatorToDoLists[samObject].GetPersonality();
-        investigatorToDoLists[simonObject].GetPersonality();
+        investigatorToDoLists[samObject].InitialiseInvestigator();
+        investigatorToDoLists[simonObject].InitialiseInvestigator();
         IssueOrder(investigatorToDoLists[samObject]);
         IssueOrder(investigatorToDoLists[simonObject]);
     }
@@ -112,24 +86,12 @@ public class InvestigatorController : MonoBehaviour
         }
     }
 
-    private void Update() 
-    {
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            Debug.Log("Cancel");
-            EventManager.CancelActions();
-            // samState.ChangeRoom("LivingRoom");
-            // simonState.ChangeRoom("LivingRoom");
-        }    
-    }
-
     private void SendMessageToBubbles(ActionList nextAction)
     {
         string name = nextAction.InvestigatorState.GetInvestigatorName();
         string room = nextAction.Room;
         string task = nextAction.Action;
-        TextMeshPro bubble = textBubbles[nextAction.InvestigatorState];
-        bubbleText.ShowMessage(new MessageCarrier(name, room, task, bubble));
+        bubbleText.ShowMessage(new MessageCarrier(name, room, task));
     }
 
     private void SetIdle(GameObject investigator)

@@ -2,9 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class EvidenceController 
+public class EvidenceController : MonoBehaviour
 {
-    public static bool inRange;
-    public static bool samInRange;
-    public static bool simonInRange;
+    private string evidenceInPlay = "";
+
+    public string EvidenceInPlay
+    {
+        get { return evidenceInPlay; }
+        set { evidenceInPlay = value; }
+    }
+
+    EvidenceState evidenceState;
+
+    private void Start() 
+    {
+        evidenceState = GetComponent<EvidenceState>();    
+    }
+
+    
 }

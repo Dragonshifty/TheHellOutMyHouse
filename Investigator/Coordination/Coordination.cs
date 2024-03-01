@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using PersonalitySpace;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Coordination 
@@ -56,6 +55,7 @@ public class Coordination
     {
         inventories[investigator] = inventory;
     }
+
 
     public static List<string> GetInventory(InvestigatorState investigator)
     {

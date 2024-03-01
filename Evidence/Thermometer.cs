@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UV : MonoBehaviour, IEvidence
+public class Thermometer : MonoBehaviour, IEvidence
 {
     public void ActionEvidence()
     {
@@ -11,6 +11,6 @@ public class UV : MonoBehaviour, IEvidence
 
     public void Cancel()
     {
-        StopAllCoroutines();
+        throw new System.NotImplementedException();
     }
 }
