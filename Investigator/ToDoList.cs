@@ -113,6 +113,8 @@ public class ToDoList
             
         clash = false;
 
+        // return new ActionList (investigatorState, currentRoom, "CheckTemperature");
+
         if (inventorySlotOne.Equals(""))
         {
             return new ActionList(investigatorState, "Outside", "GrabEvidence");

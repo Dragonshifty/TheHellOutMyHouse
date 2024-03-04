@@ -33,6 +33,23 @@ public class RoomKnowledge : MonoBehaviour
                 EventManager.EnteredRoom(gameObject);
             }
         }
+
+        // if (gameObject.tag.Equals("Player"))
+        // {
+        //     room.ClearCoroutines();
+        //     Debug.Log(GetRoomName() + "Down");
+        //     LowerTemp();
+        // }
+    }
+
+    private void OnTriggerExit(Collider other) 
+    {
+        // if (gameObject.tag.Equals("Player"))
+        // {
+        //     Debug.Log(GetRoomName() + "Up");
+        //     room.ClearCoroutines();
+        //     RaiseTemp();
+        // }    
     }
 
     public string GetRoomName()
@@ -64,5 +81,15 @@ public class RoomKnowledge : MonoBehaviour
     public List<Transform> GetRoomPoints()
     {
         return room.GetWaypoints();
+    }
+
+    public void RaiseTemp()
+    {
+        StartCoroutine(room.RestoreTemperature());
+    }
+
+    public void LowerTemp()
+    {
+        StartCoroutine(room.LowerTemperature());
     }
 }

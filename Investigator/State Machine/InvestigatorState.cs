@@ -70,6 +70,12 @@ public class InvestigatorState : MonoBehaviour
         StartAction(eventPosition, room);
     }
 
+    public void CheckRoomTemperature(string room)
+    {
+        currentState = GetComponent<CheckTemperature>();
+        StartAction(transformCache, room);
+    }
+
     public IActivate GetCurrentState()
     {
         return currentState;

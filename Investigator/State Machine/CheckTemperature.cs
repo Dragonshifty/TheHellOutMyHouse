@@ -1,19 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.AI;
 using UnityEngine;
+using UnityEngine.AI;
 
-public class SearchRoom : MonoBehaviour, IActivate
+public class CheckTemperature : MonoBehaviour, IActivate
 {
+
+
     List<Transform> roomWaypoints;
     NavMeshAgent investigatorAgent;
+    RoomKnowledge roomKnowledge;
     private Coroutine currentCoroutine;
     private int counter;
 
 
-    private void Start() 
+    private void Start()
     {
         investigatorAgent = GetComponent<NavMeshAgent>();
+        roomKnowledge = GetComponent<RoomKnowledge>();
     }
     public void DoYourThing(Transform position, string room)
     {
@@ -22,8 +26,7 @@ public class SearchRoom : MonoBehaviour, IActivate
 
     public void StartSearch()
     {
-        counter = UnityEngine.Random.Range(3, 10);
-        RoomKnowledge roomKnowledge = GetComponent<RoomKnowledge>();
+        counter = UnityEngine.Random.Range(3, 10);  
         roomWaypoints = roomKnowledge.GetRoomPoints();
         MoveToDestination();
     }
@@ -67,7 +70,8 @@ public class SearchRoom : MonoBehaviour, IActivate
         {
             // MoveToDestination();
             currentCoroutine = StartCoroutine(HoldPlease());
-        } else
+        }
+        else
         {
             EventManager.FinishedTask(gameObject);
         }
@@ -76,6 +80,7 @@ public class SearchRoom : MonoBehaviour, IActivate
     private IEnumerator HoldPlease()
     {
         int holdtime = UnityEngine.Random.Range(1, 5);
+        Debug.Log(roomKnowledge.GetRoomName() + " is at " +roomKnowledge.GetRoomTemperature() + "°");
         yield return new WaitForSeconds(holdtime);
         MoveToDestination();
     }
@@ -89,3 +94,5 @@ public class SearchRoom : MonoBehaviour, IActivate
         }
     }
 }
+
+

@@ -49,6 +49,8 @@ public class InvestigatorController : MonoBehaviour
         IssueOrder(investigatorToDoLists[samObject]);
         IssueOrder(investigatorToDoLists[simonObject]);
     }
+    
+    
 
     private void IssueOrder(ToDoList investigatorToDoList)
     {
@@ -82,6 +84,9 @@ public class InvestigatorController : MonoBehaviour
                 case "GrabEvidence":
                     nextAction.InvestigatorState.GrabNewEvidence(nextAction.Room);
                     break;
+                case "CheckTemperature":
+                    nextAction.InvestigatorState.CheckRoomTemperature(nextAction.Room);
+                    break;
             }
         }
     }
@@ -101,13 +106,17 @@ public class InvestigatorController : MonoBehaviour
 
     private void GetRoomInfo(GameObject investigator)
     {
-        RoomKnowledge roomKnowledge = investigator.GetComponent<RoomKnowledge>();
-        string room = roomKnowledge.GetRoomName();
-        string investigatorName = investigator.GetComponent<InvestigatorState>().GetInvestigatorName();
-        bool lightStatus = roomKnowledge.GetLightStatus();
+        if (!investigator.gameObject.tag.Equals("Player"))
+        {
+            RoomKnowledge roomKnowledge = investigator.GetComponent<RoomKnowledge>();
+            string room = roomKnowledge.GetRoomName();
+            // string investigatorName = investigator.GetComponent<InvestigatorState>().GetInvestigatorName();
+            bool lightStatus = roomKnowledge.GetLightStatus();
 
-        investigatorToDoLists[investigator].UpdateRoomStatus(roomKnowledge);
-        // Debug.Log(investigatorName + room + " Light is " + lightStatus);
+            investigatorToDoLists[investigator].UpdateRoomStatus(roomKnowledge);
+            // Debug.Log(investigatorName + room + " Light is " + lightStatus);
+        }
+
     }
 
     private void UpdateLights(GameObject investigator)

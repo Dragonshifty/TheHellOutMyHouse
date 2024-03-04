@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    private void Start() {
+        EventManager.HaveEnteredRoom += gameObject => GetRoomInfo(gameObject);
+    }
+    
     private float speed = 5f;
 
     private void Update() 
@@ -38,5 +42,17 @@ public class PlayerMovement : MonoBehaviour
     private Ray GetMouseRay()
     {
         return Camera.main.ScreenPointToRay(Input.mousePosition);
+    }
+
+    private void GetRoomInfo(GameObject gameObject)
+    {
+
+        if (gameObject.tag.Equals("Player"))
+        {
+            RoomKnowledge roomKnowledge = GetComponent<RoomKnowledge>();
+            string room = roomKnowledge.GetRoomName();
+            float temp = roomKnowledge.GetRoomTemperature();
+            Debug.Log("Player entered" + room + " and it's " + temp + "°");
+        }        
     }
 }
