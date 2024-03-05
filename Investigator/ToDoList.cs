@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using PersonalitySpace;
-using Unity.VisualScripting;
+using System.Linq;
 using UnityEngine;
 
 public class ToDoList 
@@ -20,6 +20,7 @@ public class ToDoList
     private string inventorySlotTwo = "";
     private bool inHouse;
     private bool clash;
+    private bool checkTemps;
     private Explore explore = new Explore();
     private Dictionary<string, bool> roomsVisited = HouseRoomReturn.GetStarterHouseRooms();
     private Dictionary<string, bool> hidingSpotsFound = HouseRoomReturn.GetStarterHouseRooms();
@@ -113,13 +114,23 @@ public class ToDoList
             
         clash = false;
 
-        // return new ActionList (investigatorState, currentRoom, "CheckTemperature");
 
         if (inventorySlotOne.Equals(""))
         {
             return new ActionList(investigatorState, "Outside", "GrabEvidence");
         }
         
+        if (!Coordination.DiscoveredEvidence.Contains("thermometer"))
+        {
+            if ((inventorySlotOne.Equals("thermometer") || inventorySlotTwo.Equals("thermometer")) && !checkTemps)
+            {
+                checkTemps = true;
+                return new ActionList(investigatorState, currentRoom, "CheckTemperature");
+            }
+        }
+
+        
+
 
         if (SearchOrExplore() && !Coordination.HasRoomBeenSearch(currentRoom)) // true is search
             {
@@ -147,6 +158,8 @@ public class ToDoList
 
     public void GetGear()
     {
+        List<string> discoveredEvidence = Coordination.DiscoveredEvidence;
+
         if (inventorySlotOne.Equals(""))
         {
             inventorySlotOne = groupInventory.GetRandomGear("Nothing");
@@ -154,20 +167,33 @@ public class ToDoList
             return;
         }
 
-        if (!inventorySlotOne.Equals("") && inventorySlotTwo.Equals(""))
+        if (discoveredEvidence.Any())
         {
-            inventorySlotTwo = groupInventory.GetRandomGear(inventorySlotOne);
-            Debug.Log(investigatorState.GetInvestigatorName() + " took " + inventorySlotTwo);
-            return;
+            foreach (string entry in discoveredEvidence)
+            {
+                if (entry.Equals(inventorySlotOne))
+                {
+                    groupInventory.PutItem(entry);
+                    inventorySlotOne = groupInventory.GetRandomGear(entry);
+                    Debug.Log(investigatorState.GetInvestigatorName() + " took " + inventorySlotOne);
+                }
+            }
         }
 
-        if (!inventorySlotTwo.Equals(""))
-        {
-            groupInventory.PutItem(inventorySlotOne);
-            inventorySlotOne = inventorySlotTwo;
-            inventorySlotTwo = groupInventory.GetRandomGear(inventorySlotOne);            
-            Debug.Log(investigatorState.GetInvestigatorName() + " took " + inventorySlotTwo);
-        }
+        // if (!inventorySlotOne.Equals("") && inventorySlotTwo.Equals(""))
+        // {
+        //     inventorySlotTwo = groupInventory.GetRandomGear(inventorySlotOne);
+        //     Debug.Log(investigatorState.GetInvestigatorName() + " took " + inventorySlotTwo);
+        //     return;
+        // }
+
+        // if (!inventorySlotTwo.Equals(""))
+        // {
+        //     groupInventory.PutItem(inventorySlotOne);
+        //     inventorySlotOne = inventorySlotTwo;
+        //     inventorySlotTwo = groupInventory.GetRandomGear(inventorySlotOne);            
+        //     Debug.Log(investigatorState.GetInvestigatorName() + " took " + inventorySlotTwo);
+        // }
 
         SetCoordinateInventory();
     }

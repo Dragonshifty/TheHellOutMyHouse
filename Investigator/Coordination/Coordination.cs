@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using PersonalitySpace;
@@ -8,6 +9,8 @@ public class Coordination
     private static Dictionary<InvestigatorState, ActionList> actionLists = new Dictionary<InvestigatorState, ActionList>();
     private static Dictionary<InvestigatorState, Personality> investigatorRoles = new Dictionary<InvestigatorState, Personality>();
     private static Dictionary<InvestigatorState, List<string>> inventories = new Dictionary<InvestigatorState, List<string>>();
+    private static string currentColdRoom;
+    private static List<string> discoveredEvidence = new List<string>();
     private static Dictionary<string, bool> roomsSearched = new Dictionary<string, bool>
     {
         { "Outside", true },
@@ -17,6 +20,25 @@ public class Coordination
         { "Bedroom1", false },
         { "Bedroom2", false }
     };
+
+    public static string CurrentColdRoom
+    {
+        get { return currentColdRoom; }
+        set { currentColdRoom = value; }
+    }
+
+    public static List<string> DiscoveredEvidence
+    {
+        get { return discoveredEvidence; }
+    }
+
+    public static void SetNewEvidence(string evidence)
+    {
+        if (!discoveredEvidence.Contains(evidence))
+        {
+            discoveredEvidence.Add(evidence);
+        }
+    }
 
     public static bool HasRoomBeenSearch(string room)
     {
@@ -85,4 +107,6 @@ public class Coordination
         return false;
     }
     
+
+
 }

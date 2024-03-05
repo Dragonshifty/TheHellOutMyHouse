@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class RoomKnowledge : MonoBehaviour
@@ -7,17 +8,25 @@ public class RoomKnowledge : MonoBehaviour
     RoomStatus room;
     List<string> roomNames;
 
+    private string roomStatusName = "RoomStatus";
+
     void Start()
     {
-        roomNames = new List<string>
+        InitialiseRoomStatus();
+    }
+
+    private void InitialiseRoomStatus()
+    {
+        GameObject[] allGameObjects = GameObject.FindObjectsOfType<GameObject>();
+        roomNames = new List<string>();
+
+        foreach (GameObject obj in allGameObjects)
         {
-            "Outside",
-            "LivingRoom",
-            "Kitchen",
-            "Hallway",
-            "Bedroom1",
-            "Bedroom2"
-        };
+            if (obj.GetComponent(roomStatusName) != null)
+            {
+                roomNames.Add(obj.gameObject.tag);
+            }
+        }
     }
 
 
@@ -33,23 +42,6 @@ public class RoomKnowledge : MonoBehaviour
                 EventManager.EnteredRoom(gameObject);
             }
         }
-
-        // if (gameObject.tag.Equals("Player"))
-        // {
-        //     room.ClearCoroutines();
-        //     Debug.Log(GetRoomName() + "Down");
-        //     LowerTemp();
-        // }
-    }
-
-    private void OnTriggerExit(Collider other) 
-    {
-        // if (gameObject.tag.Equals("Player"))
-        // {
-        //     Debug.Log(GetRoomName() + "Up");
-        //     room.ClearCoroutines();
-        //     RaiseTemp();
-        // }    
     }
 
     public string GetRoomName()

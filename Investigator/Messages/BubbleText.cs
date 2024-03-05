@@ -69,6 +69,9 @@ public class BubbleText : MonoBehaviour
             case "MinorEvent":
                 textBubbles[name].text = "Minor Event";
                 break;
+            case "CheckTemperature":
+                textBubbles[name].text = "Checking Temperature";
+                break;
         }
     }
 }

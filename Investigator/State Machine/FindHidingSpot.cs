@@ -101,9 +101,11 @@ public class FindHidingSpot : MonoBehaviour, IActivate
             CancelAll();
             EventManager.FoundHidingSpot(gameObject);
             EventManager.FinishedTask(gameObject);
+            yield break;
         } else
-        {
+        {      
             MoveToDestination();
+            yield break;
         }       
     }
 
