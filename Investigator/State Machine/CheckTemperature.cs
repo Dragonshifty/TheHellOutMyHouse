@@ -9,6 +9,7 @@ public class CheckTemperature : MonoBehaviour, IActivate
     NavMeshAgent investigatorAgent;
     RoomKnowledge roomKnowledge;
     HouseInfo houseInfo;
+    private TravelTo travelTo;
     private Coroutine currentCoroutine;
     private int counter;
     private Dictionary<string, Transform> houseRoomWaypoints;
@@ -39,6 +40,7 @@ public class CheckTemperature : MonoBehaviour, IActivate
             }
         }
     }
+    
     public void DoYourThing(Transform position, string room)
     {  
         PickNewRoom();
@@ -60,57 +62,31 @@ public class CheckTemperature : MonoBehaviour, IActivate
         targetRoom = rooms[index];
         checkedRooms.Add(rooms[index]);
         rooms.Remove(targetRoom);
-        MoveToNewRoom(targetRoom);
-    }
-
-    private void MoveToNewRoom(string roomName)
-    {
-        Vector3 destination = houseRoomWaypoints[roomName].position;
-        investigatorAgent.destination = destination;
-
-        currentCoroutine = StartCoroutine(CheckForDestinationReached(destination));
-    }
-
-    public void StartSearch()
-    {
-        roomWaypoints = roomKnowledge.GetRoomPoints();
-        MoveToRoomWaypoint();
+        // MoveToNewRoom(targetRoom);
+        TravelToWaypoint(houseRoomWaypoints[targetRoom]);
     }
 
     private void MoveToRoomWaypoint()
     {
+        roomWaypoints = roomKnowledge.GetRoomPoints();
         int index = UnityEngine.Random.Range(0, roomWaypoints.Count);
 
         if (roomWaypoints.Count == 0)
         {
             Debug.LogError("No waypoints available.");
         }
-        Vector3 destination = roomWaypoints[index].position;
-        investigatorAgent.destination = destination;
 
-        currentCoroutine = StartCoroutine(CheckForDestinationReached(destination));
+        TravelToWaypoint(roomWaypoints[index]);
     }
 
-    private IEnumerator CheckForDestinationReached(Vector3 destination)
+    private void TravelToWaypoint(Transform target)
     {
-        while (true)
-        {
-            yield return new WaitForSeconds(0.4f);
-            if (CheckDistance(destination) < 1.5f)
-            {
-                // EndTask();
-                DestinationReached();
-                yield break;
-            }
-        }
+        #pragma warning disable 4014
+        travelTo = new TravelTo(investigatorAgent, target);
+        travelTo.MoveToWaypoint(DestinationReached);
     }
 
-    private float CheckDistance(Vector3 destination)
-    {
-        return Vector3.Distance(transform.position, destination);
-    }
-
-    private void DestinationReached()
+     private void DestinationReached()
     {
         counter--;
         if (counter > 0)
@@ -152,20 +128,15 @@ public class CheckTemperature : MonoBehaviour, IActivate
             yield break;
         } else
         {
-            StartSearch();
+            MoveToRoomWaypoint();
             yield break;
         } 
     }
 
-
-
     public void CancelAll()
     {
-        if (currentCoroutine != null)
-        {
-            StopAllCoroutines();
-            currentCoroutine = null;
-        }
+        StopAllCoroutines();
+        travelTo.StopNavigation();
     }
 }
 

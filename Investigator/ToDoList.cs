@@ -114,7 +114,6 @@ public class ToDoList
             
         clash = false;
 
-
         if (inventorySlotOne.Equals(""))
         {
             return new ActionList(investigatorState, "Outside", "GrabEvidence");

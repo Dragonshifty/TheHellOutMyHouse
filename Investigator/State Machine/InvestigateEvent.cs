@@ -6,6 +6,7 @@ using UnityEngine.AI;
 public class InvestigateEvent : MonoBehaviour, IActivate
 {
     NavMeshAgent investigatorAgent;
+    TravelTo travelTo;
     InvestigatorState investigator;
     Coroutine currentCoroutine;
     Vector3 currentSpot;
@@ -25,35 +26,15 @@ public class InvestigateEvent : MonoBehaviour, IActivate
         fear.multiplier++;
         counter = UnityEngine.Random.Range(3, 10);
         inventory = Coordination.GetInventory(investigator);
-        MoveToDestination(position);
+        TravelToWaypoint(position);
     }
 
-    private void MoveToDestination(Transform eventPosition)
+    private void TravelToWaypoint(Transform target)
     {
-        currentSpot = eventPosition.position;
-        investigatorAgent.destination = currentSpot;
-
-        currentCoroutine = StartCoroutine(CheckForDestinationReached(currentSpot));
+        #pragma warning disable 4014
+        travelTo = new TravelTo(investigatorAgent, target);
+        travelTo.MoveToWaypoint(DestinationReached);
     }
-
-    private IEnumerator CheckForDestinationReached(Vector3 destination)
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(0.4f);
-            if (CheckDistance(destination) < 1.5f)
-            {
-                DestinationReached();
-                yield break;
-            }
-        }
-    }
-
-    private float CheckDistance(Vector3 destination)
-    {
-        return Vector3.Distance(transform.position, destination);
-    }
-
 
     private void DestinationReached()
     {
@@ -94,5 +75,6 @@ public class InvestigateEvent : MonoBehaviour, IActivate
             StopAllCoroutines();
             currentCoroutine = null;
         }
+        
     }
 }

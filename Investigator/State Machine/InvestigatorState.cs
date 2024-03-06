@@ -76,6 +76,12 @@ public class InvestigatorState : MonoBehaviour
         StartAction(transformCache, room);
     }
 
+    public void LaySaltDown(string room)
+    {
+        currentState = GetComponent<LaySalt>();
+        StartAction(transformCache, room);
+    }
+
     public IActivate GetCurrentState()
     {
         return currentState;

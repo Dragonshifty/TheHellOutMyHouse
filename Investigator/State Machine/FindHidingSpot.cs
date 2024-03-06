@@ -7,6 +7,7 @@ using UnityEngine.AI;
 public class FindHidingSpot : MonoBehaviour, IActivate
 {
     NavMeshAgent investigatorAgent;
+    private TravelTo travelTo;
     InvestigatorState investigator;
     List<Transform> roomWaypoints;
     Transform hidingSpot;
@@ -25,6 +26,7 @@ public class FindHidingSpot : MonoBehaviour, IActivate
     {
         StopAllCoroutines();
         if (currentCoroutine != null) currentCoroutine = null;
+        travelTo.StopNavigation();
     }
 
     public void DoYourThing(Transform position, string room)
@@ -54,23 +56,15 @@ public class FindHidingSpot : MonoBehaviour, IActivate
         {
             Debug.LogError("No waypoints available.");
         }
-        Vector3 destination = roomWaypoints[index].position;
-        investigatorAgent.destination = destination;
 
-        currentCoroutine = StartCoroutine(CheckForDestinationReached(destination));
+        TravelToWaypoint(roomWaypoints[index]);
     }
 
-    private IEnumerator CheckForDestinationReached(Vector3 destination)
+    private void TravelToWaypoint(Transform target)
     {
-        while (true)
-        {
-            yield return new WaitForSeconds(0.4f);
-            if (CheckDistance(destination) < 1.5f)
-            {
-                DestinationReached();
-                yield break;
-            }
-        }
+        #pragma warning disable 4014
+        travelTo = new TravelTo(investigatorAgent, target);
+        travelTo.MoveToWaypoint(DestinationReached);
     }
 
     private void DestinationReached()
@@ -78,7 +72,6 @@ public class FindHidingSpot : MonoBehaviour, IActivate
         counter--;
         if (counter > 0)
         {
-            // MoveToDestination();
             currentCoroutine = StartCoroutine(HoldPlease());
         }
         else
@@ -116,5 +109,4 @@ public class FindHidingSpot : MonoBehaviour, IActivate
         if (CheckDistance(hidingSpot.position) < 1f && chance <= hidingLevel) return true;
         return false;
     }
-
 }

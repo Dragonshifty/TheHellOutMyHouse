@@ -5,11 +5,10 @@ using UnityEngine;
 
 public class GrabEvidence : MonoBehaviour, IActivate
 {
-
-
     NavMeshAgent investigatorAgent;
     HouseInfo houseInfo;
     Coroutine currentCoroutine;
+    TravelTo travelTo;
 
     Dictionary<string, Transform> roomWaypoints;
     
@@ -30,35 +29,14 @@ public class GrabEvidence : MonoBehaviour, IActivate
 
     public void DoYourThing(Transform position, string room)
     {
-        
-        MoveToDestination(room);
+        TravelToWaypoint(room);
     }
 
-    private void MoveToDestination(string waypointName)
+    private void TravelToWaypoint(string room)
     {
-        // Debug.Log(waypointName);
-        Vector3 destination = roomWaypoints["Outside"].position;
-        investigatorAgent.destination = destination;
-
-        currentCoroutine = StartCoroutine(CheckForDestinationReached(destination));
-    }
-
-    private IEnumerator CheckForDestinationReached(Vector3 destination)
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(0.4f);
-            if (CheckDistance(destination) < 1.5f)
-            {
-                DestinationReached();
-                yield break;
-            }
-        }
-    }
-
-    private float CheckDistance(Vector3 destination)
-    {
-        return Vector3.Distance(transform.position, destination);
+        #pragma warning disable 4014
+        travelTo = new TravelTo(investigatorAgent, roomWaypoints["Outside"].transform);
+        travelTo.MoveToWaypoint(DestinationReached);
     }
 
     private void DestinationReached()
@@ -74,5 +52,6 @@ public class GrabEvidence : MonoBehaviour, IActivate
             StopAllCoroutines();
             currentCoroutine = null;
         }
+        travelTo.StopNavigation();
     }
 }

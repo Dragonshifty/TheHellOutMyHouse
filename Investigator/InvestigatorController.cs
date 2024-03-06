@@ -87,6 +87,9 @@ public class InvestigatorController : MonoBehaviour
                 case "CheckTemperature":
                     nextAction.InvestigatorState.CheckRoomTemperature(nextAction.Room);
                     break;
+                case "LaySalt":
+                    nextAction.InvestigatorState.LaySaltDown(nextAction.Room);
+                    break;
             }
         }
     }

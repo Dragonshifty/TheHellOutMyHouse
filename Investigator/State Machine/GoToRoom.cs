@@ -5,14 +5,15 @@ using UnityEngine.AI;
 
 public class GoToRoom : MonoBehaviour, IActivate
 {
-    NavMeshAgent investigator;    
+    NavMeshAgent investigatorAgent;    
+    private TravelTo travelTo;
     HouseInfo houseInfo;
     Coroutine currentCoroutine;
 
     Dictionary <string, Transform> roomWaypoints;
     private void Start() 
     {
-        investigator = GetComponent<NavMeshAgent>();  
+        investigatorAgent = GetComponent<NavMeshAgent>();  
         houseInfo = FindObjectOfType<HouseInfo>();
         if (houseInfo != null)
         {
@@ -22,38 +23,18 @@ public class GoToRoom : MonoBehaviour, IActivate
         {
             Debug.LogError("HouseInfo component is null!");
         }
-
     }
 
     public void DoYourThing(Transform position, string room)
     {
-        MoveToDestination(room);
+        TravelToWaypoint(room);
     }
 
-    private void MoveToDestination(string waypointName)
+    private void TravelToWaypoint(string room)
     {
-        Vector3 destination = roomWaypoints[waypointName].position;
-        investigator.destination = destination;
-
-        currentCoroutine = StartCoroutine(CheckForDestinationReached(destination));
-    }
-
-    private IEnumerator CheckForDestinationReached(Vector3 destination)
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(0.4f);
-            if (CheckDistance(destination) < 1.5f)
-            {
-                DestinationReached();
-                yield break;
-            }
-        }
-    }
-
-    private float CheckDistance(Vector3 destination)
-    {
-        return Vector3.Distance(transform.position, destination);
+        #pragma warning disable 4014
+        travelTo = new TravelTo(investigatorAgent, roomWaypoints[room].transform);
+        travelTo.MoveToWaypoint(DestinationReached);
     }
 
     private void DestinationReached()
@@ -63,10 +44,7 @@ public class GoToRoom : MonoBehaviour, IActivate
 
     public void CancelAll()
     {
-        if (currentCoroutine != null)
-        {
-            StopAllCoroutines();
-            currentCoroutine = null;
-        }
+        StopAllCoroutines();
+        travelTo.StopNavigation();
     }
 }

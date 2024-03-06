@@ -72,6 +72,9 @@ public class BubbleText : MonoBehaviour
             case "CheckTemperature":
                 textBubbles[name].text = "Checking Temperature";
                 break;
+            case "LaySalt":
+                textBubbles[name].text = "Laying Salt";
+                break;
         }
     }
 }

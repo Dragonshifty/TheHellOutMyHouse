@@ -6,54 +6,36 @@ using UnityEngine.UI;
 
 public class FlickLightSwitch : MonoBehaviour, IActivate
 {
-    NavMeshAgent investigator;
+    NavMeshAgent investigatorAgent;
+    private TravelTo travelTo;
     Coroutine currentCoroutine;
     private LightswitchInfo lightswitchInfo;
     private Dictionary<string, Transform> lightswitches;
     
     public void DoYourThing(Transform position, string room)
     {
-        MoveToDestination(room);
+        TravelToWaypoint(room);
     }
 
     void Start()
     {
-        investigator = GetComponent<NavMeshAgent>();
+        investigatorAgent = GetComponent<NavMeshAgent>();
         lightswitchInfo = FindObjectOfType<LightswitchInfo>();
         lightswitches = lightswitchInfo.GetLightswitchWaypoints();
     }
 
-    private void MoveToDestination(string waypointName)
+    private void TravelToWaypoint(string room)
     {
-        Vector3 destination = lightswitches[waypointName].position;
-        investigator.destination = destination;
-
-        currentCoroutine = StartCoroutine(CheckForDestinationReached(destination));
+        #pragma warning disable 4014
+        travelTo = new TravelTo(investigatorAgent, lightswitches[room].transform);
+        travelTo.MoveToWaypoint(DestinationReached); 
     }
 
-    private IEnumerator CheckForDestinationReached(Vector3 destination)
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(0.4f);
-            if (CheckDistance(destination) < 1.5f)
-            {
-                DestinationReached();
-                yield break;
-            }
-        }
-    }
-
-    private float CheckDistance(Vector3 destination)
-    {
-        return Vector3.Distance(transform.position, destination);
-    }
-
+    
     private void DestinationReached()
     {
         EventManager.ChangedLights(gameObject);
         EventManager.FinishedTask(gameObject);
-        
     }
 
     public void CancelAll()
@@ -63,5 +45,6 @@ public class FlickLightSwitch : MonoBehaviour, IActivate
             StopAllCoroutines();
             currentCoroutine = null;
         }
+        travelTo.StopNavigation();
     }
 }
