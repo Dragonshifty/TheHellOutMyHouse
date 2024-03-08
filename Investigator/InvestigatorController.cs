@@ -11,7 +11,7 @@ public class InvestigatorController : MonoBehaviour
     private InvestigatorState samState;
     private InvestigatorState simonState;
     private BubbleText bubbleText;
-    
+    private Transform minorEventLocation;
     [SerializeField] Transform frontDoor;
     
     GameObject samObject;
@@ -49,7 +49,6 @@ public class InvestigatorController : MonoBehaviour
         IssueOrder(investigatorToDoLists[samObject]);
         IssueOrder(investigatorToDoLists[simonObject]);
     }
-    
     
 
     private void IssueOrder(ToDoList investigatorToDoList)
@@ -89,6 +88,12 @@ public class InvestigatorController : MonoBehaviour
                     break;
                 case "LaySalt":
                     nextAction.InvestigatorState.LaySaltDown(nextAction.Room);
+                    break;
+                case "Hide":
+                    nextAction.InvestigatorState.Hide(nextAction.Room);
+                    break;
+                case "ReturnToInvestigate":
+                    nextAction.InvestigatorState.InvestigateMinorEvent(minorEventLocation, nextAction.Room);
                     break;
             }
         }
@@ -162,7 +167,17 @@ public class InvestigatorController : MonoBehaviour
 
         SendMessageToBubbles(nextAction);
         nextAction.InvestigatorState.StopAction();
-        nextAction.InvestigatorState.InvestigateMinorEvent(eventPosition, nextAction.Room);
+
+        switch (nextAction.Action)
+        {
+            case "Hide":
+                minorEventLocation = eventPosition;
+                nextAction.InvestigatorState.Hide(nextAction.Room);
+                break;
+            case "MinorEvent":
+                nextAction.InvestigatorState.InvestigateMinorEvent(eventPosition, nextAction.Room);
+                break;
+        } 
     }
 
     private void CollectedGear(GameObject investigator)

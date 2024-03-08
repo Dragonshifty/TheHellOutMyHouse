@@ -12,15 +12,18 @@ public class ToDoList
     private string currentRoom;
     private bool lightOn;
     private float roomTemerature;
-
     private Personality personality;
+    private PersonalityController personalityController = new PersonalityController();
     private InvestigatorState investigatorState;
     private GroupInventory groupInventory;
     private string inventorySlotOne = "";
     private string inventorySlotTwo = "";
-    private bool inHouse;
+    private bool haveStarted;
     private bool clash;
-    private bool checkTemps;
+    private bool needNewGear;
+    private bool needNewRoom = true;
+    private bool haveFoundHidingSpot;
+    private bool minorEventHaveHidden;
     private Explore explore = new Explore();
     private Dictionary<string, bool> roomsVisited = HouseRoomReturn.GetStarterHouseRooms();
     private Dictionary<string, bool> hidingSpotsFound = HouseRoomReturn.GetStarterHouseRooms();
@@ -49,27 +52,7 @@ public class ToDoList
 
     public void GetPersonality()
     {
-        PersonalityList personalityList = new PersonalityList();
-
-        string[] personalityListEasy = new string[] {"Student", "Amateur", "Experienced", "Professional"};
-
-        string choice = personalityListEasy[UnityEngine.Random.Range(0, 3)];
-
-        switch (choice)
-        {
-            case "Student":
-                personality = personalityList.GetStudent();
-                break;
-            case "Amateur":
-                personality = personalityList.GetAmateur();
-                break;
-            case "Experienced":
-                personality = personalityList.GetExperienced();
-                break;
-            case "Professional":
-                personality = personalityList.GetProfessional();
-                break;
-        }
+        personality = personalityController.GetPersonality();
 
         investigatorType = personality.GetInvestigatorType();
         Coordination.SetRole(investigatorState, personality);
@@ -92,10 +75,21 @@ public class ToDoList
 
     public ActionList GetNextAction()
     {
-        
-        if (!inHouse)
+        if (minorEventHaveHidden)
         {
-            inHouse = true;
+            minorEventHaveHidden = false;
+            return new ActionList(investigatorState, currentRoom, "ReturnToInvestigate");
+        }
+
+        if (inventorySlotOne.Equals("") || needNewGear)
+        {
+            needNewGear = false;
+            return new ActionList(investigatorState, "Outside", "GrabEvidence");
+        }
+
+        if (!haveStarted)
+        {
+            haveStarted = true;
 
             return new ActionList(investigatorState, "LivingRoom", "Travel");
         }
@@ -114,24 +108,37 @@ public class ToDoList
             
         clash = false;
 
-        if (inventorySlotOne.Equals(""))
+        if (needNewRoom) 
         {
-            return new ActionList(investigatorState, "Outside", "GrabEvidence");
+            string chosenRoom = explore.ChooseNewRoom(roomsVisited);
+            needNewRoom = false;
+            return new ActionList(investigatorState, chosenRoom, "Travel");            
         }
+
+        if (personalityController.HidingSpotLevelCheck(personality) && hidingSpotsFound[currentRoom] == false)
+        {
+            return new ActionList(investigatorState, currentRoom, "FindHiding");
+        }
+
         
         if (!Coordination.DiscoveredEvidence.Contains("thermometer"))
         {
-            if ((inventorySlotOne.Equals("thermometer") || inventorySlotTwo.Equals("thermometer")) && !checkTemps)
+            if ((inventorySlotOne.Equals("thermometer") || inventorySlotTwo.Equals("thermometer")) && !needNewGear)
             {
-                checkTemps = true;
+                needNewGear = true;
+                needNewRoom = true;
                 return new ActionList(investigatorState, currentRoom, "CheckTemperature");
             }
         }
 
-        
+        if (inventorySlotOne.Equals("salt") && !needNewGear)
+        {
+            needNewGear = true;
+            needNewRoom = true;
+            return new ActionList(investigatorState, currentRoom, "LaySalt");
+        }
 
-
-        if (SearchOrExplore() && !Coordination.HasRoomBeenSearch(currentRoom)) // true is search
+        if (personalityController.InvestigatorLevelCheck(personality) && !Coordination.HasRoomBeenSearch(currentRoom)) // true is search
             {
                 Coordination.SetRoomSearched(currentRoom, true);
                 return new ActionList(investigatorState, currentRoom, "FindHiding");
@@ -144,15 +151,21 @@ public class ToDoList
 
     public ActionList GetMinorEventAction()
     {
+        if (personalityController.FearLevelCheck(personality))
+        {
+            string hidingSpotDestination = "Outside";
+            minorEventHaveHidden = true;
+            foreach (KeyValuePair<string, bool> entry in hidingSpotsFound)
+            {
+                if (!entry.Key.Equals(currentRoom) && entry.Value == true)
+                {
+                    hidingSpotDestination = entry.Key;
+                    break;
+                }
+            }
+            return new ActionList(investigatorState, hidingSpotDestination, "Hide");
+        }
         return new ActionList(investigatorState, currentRoom, "MinorEvent");
-    }
-
-    private bool SearchOrExplore()
-    {
-        int searchLevel = personality.GetInvestigativeSkillLevel();
-        if (searchLevel >= UnityEngine.Random.Range(0, 11)) return true;
-        
-        return false;
     }
 
     public void GetGear()
@@ -177,7 +190,12 @@ public class ToDoList
                     Debug.Log(investigatorState.GetInvestigatorName() + " took " + inventorySlotOne);
                 }
             }
+            return;
         }
+
+        groupInventory.PutItem(inventorySlotOne);
+        inventorySlotOne = groupInventory.GetRandomGear(inventorySlotOne);
+        Debug.Log(investigatorState.GetInvestigatorName() + " took " + inventorySlotOne);
 
         // if (!inventorySlotOne.Equals("") && inventorySlotTwo.Equals(""))
         // {
@@ -207,4 +225,8 @@ public class ToDoList
         Coordination.SetInventory(investigatorState, inventory);
     }
 
+    public ActionList RunAway()
+    {
+        return new ActionList(investigatorState, currentRoom, "Hide");
+    }
 }
