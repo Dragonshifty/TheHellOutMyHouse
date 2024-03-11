@@ -10,6 +10,16 @@ public class PersonalityController
         PersonalityList personalityList = new PersonalityList();
 
         string[] personalityListEasy = new string[] {"Student", "Amateur", "Experienced", "Professional"};
+        string[] personalityListFull = new string[] 
+        {
+            "Student", 
+            "Amateur",
+            "Experienced",
+            "Professional",
+            "Van Monitor",
+            "Trickster",
+            "Estate Agent"
+        };
 
         string choice = personalityListEasy[UnityEngine.Random.Range(0, 3)];
 
@@ -18,8 +28,7 @@ public class PersonalityController
             case "Student":
                 return personalityList.GetStudent();
             case "Amateur":
-                return personalityList.GetAmateur();
-                
+                return personalityList.GetAmateur();     
             case "Experienced":
                 return personalityList.GetExperienced();
             case "Professional":
